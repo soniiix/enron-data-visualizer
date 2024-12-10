@@ -33,7 +33,7 @@ class Mail(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'mailbody'
+        db_table = 'mail'
 
 
 class Receiver(models.Model):
@@ -44,4 +44,4 @@ class Receiver(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'mailheader'
+        db_table = 'receiver'
