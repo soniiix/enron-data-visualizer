@@ -13,7 +13,7 @@ class Employee(models.Model):
         db_table = 'employee'
 
 
-class Mailadress(models.Model):
+class Email(models.Model):
     mailadress_id = models.AutoField(primary_key=True)
     mail = models.CharField(max_length=200)
     employee = models.ForeignKey(Employee, models.DO_NOTHING, blank=True, null=True)
@@ -21,12 +21,12 @@ class Mailadress(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'mailadress'
+        db_table = 'email'
 
 
-class Mailbody(models.Model):
+class Mail(models.Model):
     mail_id = models.BigIntegerField(primary_key=True)
-    sender = models.ForeignKey(Mailadress, models.DO_NOTHING, blank=True, null=True)
+    sender = models.ForeignKey(Email, models.DO_NOTHING, blank=True, null=True)
     mail_date = models.DateField(blank=True, null=True)
     mail_subject = models.TextField(blank=True, null=True)
     mail_content = models.TextField(blank=True, null=True)
@@ -36,10 +36,10 @@ class Mailbody(models.Model):
         db_table = 'mailbody'
 
 
-class Mailheader(models.Model):
+class Receiver(models.Model):
     mailheader_id = models.AutoField(primary_key=True)
-    mail = models.ForeignKey(Mailbody, models.DO_NOTHING, blank=True, null=True)
-    receiver = models.ForeignKey(Mailadress, models.DO_NOTHING)
+    mail = models.ForeignKey(Mail, models.DO_NOTHING, blank=True, null=True)
+    receiver = models.ForeignKey(Email, models.DO_NOTHING)
     mailheader_type = models.CharField(max_length=5, blank=True, null=True)
 
     class Meta:
