@@ -7,3 +7,6 @@ L'affaire Enron est un des plus grands scandales financiers des États-Unis, met
 Ce projet vise à implémenter une application web permettant de visualiser et analyser les informations contenues dans les e-mails échangés entre les employés d'Enron, ainsi que de faciliter l'exploration de la base de données des messages. Le projet se concentrera sur l'analyse des interactions, des relations et des événements clés qui ont conduit à ce scandale.
 
 ## Objectifs du projet
+
+L’objectif principal est l'implémentation d’une application web pour visualiser des informations pertinentes contenus les e-mails échangés entre les employés d’Enron (dont quelques externes).
+Un deuxième objectif est le développement d’un script d’automatisation du peuplement de la base de données, à partir des fichiers (texte plain) contenus dans le jeu de données (20 Go approx.);
