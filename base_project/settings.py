@@ -43,7 +43,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'enron.urls'
+ROOT_URLCONF = 'base_project.urls'
 
 TEMPLATES = [
     {
@@ -61,7 +61,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'enron.wsgi.application'
+WSGI_APPLICATION = 'base_project.wsgi.application'
 
 
 # Database
