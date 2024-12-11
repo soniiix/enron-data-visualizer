@@ -2,46 +2,45 @@ from django.db import models
 
 
 class Employee(models.Model):
-    employee_id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    title = models.CharField(max_length=30, blank=True, null=True)
-    category = models.CharField(max_length=50, blank=True, null=True)
+    id = models.AutoField(primary_key=True)
+    firstname = models.CharField(max_length=45)
+    lastname = models.CharField(max_length=45)
+    category = models.CharField(max_length=45, blank=True, null=True)
     
     class Meta:
-        managed = False
-        db_table = 'employee'
+        db_table = 'Employee'
 
 
-class Mailadress(models.Model):
-    mailadress_id = models.AutoField(primary_key=True)
-    mail = models.CharField(max_length=200)
-    employee = models.ForeignKey(Employee, models.DO_NOTHING, blank=True, null=True)
-    mailadress_type = models.CharField(max_length=8, blank=True, null=True)
+class Email(models.Model):
+    id = models.AutoField(primary_key=True)
+    adrmail = models.CharField(max_length=45)
+    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
     class Meta:
-        managed = False
-        db_table = 'mailadress'
+        db_table = 'Email'
 
 
-class Mailbody(models.Model):
-    mail_id = models.BigIntegerField(primary_key=True)
-    sender = models.ForeignKey(Mailadress, models.DO_NOTHING, blank=True, null=True)
-    mail_date = models.DateField(blank=True, null=True)
-    mail_subject = models.TextField(blank=True, null=True)
-    mail_content = models.TextField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'mailbody'
-
-
-class Mailheader(models.Model):
-    mailheader_id = models.AutoField(primary_key=True)
-    mail = models.ForeignKey(Mailbody, models.DO_NOTHING, blank=True, null=True)
-    receiver = models.ForeignKey(Mailadress, models.DO_NOTHING)
-    mailheader_type = models.CharField(max_length=5, blank=True, null=True)
+class Mail(models.Model):
+    id = models.AutoField(primary_key=True)
+    identifiant = models.IntegerField(unique=True)
+    filepath = models.CharField(max_length=45)
+    objet = models.CharField(max_length=45)
+    date_mail = models.DateTimeField()
+    message = models.TextField()
+    is_reply = models.BooleanField()
+    main_message = models.TextField()
+    date_main_message = models.DateTimeField()
+    email_address_id = models.ForeignKey(Email, on_delete=models.CASCADE)
 
     class Meta:
-        managed = False
-        db_table = 'mailheader'
+        db_table = 'Mail'
+
+
+class Receiver(models.Model):
+    id = models.AutoField(primary_key=True)
+    genre = models.CharField(max_length=10)
+    email_address_id = models.ForeignKey(Email, on_delete=models.CASCADE)
+    mail_identifiant = models.ForeignKey(Mail, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'Receiver'
