@@ -21,8 +21,7 @@ class Email(models.Model):
 
 
 class Mail(models.Model):
-    id = models.AutoField(primary_key=True)
-    identifiant = models.IntegerField(unique=True)
+    mail_id = models.CharField(primary_key=True, unique=True)
     filepath = models.CharField(max_length=45)
     objet = models.CharField(max_length=45)
     date_mail = models.DateTimeField()
