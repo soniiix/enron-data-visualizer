@@ -11,6 +11,40 @@ Ce projet vise à implémenter une application web permettant de visualiser et a
 L’objectif principal est l'implémentation d’une application web pour visualiser des informations pertinentes contenus les e-mails échangés entre les employés d’Enron (dont quelques externes).
 Un deuxième objectif est le développement d’un script d’automatisation du peuplement de la base de données, à partir des fichiers (texte plain) contenus dans le jeu de données (20 Go approximativement).
 
+## Configuration
+
+Pour avoir, en local, la même base de données que celle utilisée par le projet Django, voici comment procéder :
+
+### Étape 1 : Télécharger PostgreSQL
+
+- Rendez-vous sur le site officiel : [PostgreSQL Download](https://www.postgresql.org/download/).
+- Sélectionnez votre système d'exploitation.
+- Cliquez sur **Download the installer**
+- Prenez la version 17.2
+1. Lancez le fichier téléchargé pour démarrer l'installation.
+2. Suivez les étapes de l'assistant :
+   - **Chemin d’installation** : Laissez celui par défaut
+   - **Composants à installer** : Laissez cochés "PostgreSQL Server", "pgAdmin 4", et "Command Line Tools".
+   - **Mot de passe utilisateur "postgres"** : Saisissez `postgres`
+   - **Port** : Par défaut, `5432`.
+3. Terminez l'installation.
+
+### Étape 2 : Vérifier l'installation
+- Ouvrez un terminal et tapez :
+  `psql --version`
+- Si PostgreSQL est bien installé, la version sera affichée.
+- Sinon, il faudra ajouter PostgreSQL au PATH (voir ci-dessous)
+
+### Étape 3 : Ajouter PostgreSQL au PATH (si nécessaire)
+
+1. Sur Windows, accédez aux **Variables d'environnement** :
+   - Dans la barre de recherche Windows, tapez `Variables d'environnement` puis Entrée
+   - Allez dans l'onglet **Variables d'environnement**
+2. Modifiez la variable `Path` dans les **Variables système** :
+   - Ajoutez le chemin vers le dossier `bin` de PostgreSQL (là où est situé le fichier `psql.exe`), par exemple :
+    `C:\Program Files\PostgreSQL\17\bin`
+3. Validez et redémarrez votre terminal pour appliquer et tester les changements. La commande `psql --version` devrait afficher la version de PostgreSQL.
+
 ## Contribution
 
 Pour contribuer au projet, il est important de respecter la convention de nommage des commits.
