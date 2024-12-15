@@ -54,6 +54,16 @@ Pour avoir, en local, la même base de données que celle utilisée par le proje
    - Tapez `\c enron`
    - Puis `\d`
 
+## Script de peuplement
+
+Le script de peuplement, créé en tant que commande Django, est exécutable (en se positionnant dans le projet) de la manière suivante :
+
+```bash
+python manage.py settlement
+```
+
+Il permet d'insérer les données  initiales dans la base de données.
+
 ## Contribution
 
 Pour contribuer au projet, il est important de respecter la convention de nommage des commits.
