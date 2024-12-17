@@ -1,27 +1,37 @@
 from django.core.management.base import BaseCommand
-from base_app.models import Employee, Email
+from base_app.models import Employee, Mail, Email
 from base_project.settings import BASE_DIR
 import xml.etree.ElementTree as xml
+import os
+from datetime import datetime
 
 class Command(BaseCommand):
     help = 'Settlement script'
     DATA_DIR = BASE_DIR.parent / "data"
     EMPLOYEES_FILE = DATA_DIR / "employees.xml"
+    MAIL_DIR = DATA_DIR / "maildir"
 
     def handle(self, *args, **options):
         self.stdout.write("--- Début du script ---")
 
         # Insertion en BDD des employés du fichier XML
-        self.setEmployees()
+        #self.populateEmployees()
 
 
-    def setEmployees(self):
+    def populateEmployees(self):
         try:
             # Récupérer le contenu du fichier XML
             root = xml.parse(self.EMPLOYEES_FILE).getroot()
 
+            # Définir des compteurs pour vérifier la cohérence
+            initial_emp_count = 0
+            inserted_emp_count = 0
+
             # Parcourir les éléments du fichier
             for child in root:
+                # Incrémenter le compteur
+                initial_emp_count += 1
+
                 # Récupérer la catégorie de l'employé si celle-ci est définie
                 category = child.attrib['category'] if (child.attrib != {}) else None
 
@@ -39,14 +49,21 @@ class Command(BaseCommand):
                             mailbox = subchild.text
 
                 # Créer une instance Employee et l'enregistrer dans la base
-                new_emp = Employee(firstname=firstname, lastname=lastname, category=category)
-                new_emp.save()
+                try:
+                    new_emp = Employee(firstname=firstname, lastname=lastname, category=category)
+                    new_emp.save()
+                    inserted_emp_count += 1
+                    
+                    # Gérer la liste des emails de l'employé (+mailbox?)
+                    for email in emails:
+                        new_email = Email(adrmail=email, employee_id=new_emp)
+                        new_email.save()
+                except Exception as e:
+                    print(f"Erreur lors de l'insertion de l'employé : {e}")
 
-                # Gérer la liste des emails de l'employé (+mailbox?)
-                for email in emails:
-                    new_email = Email(adrmail=email, employee_id=new_emp)
-                    new_email.save()
+            # Affichage des statuts
             print("Données enregistrées avec succès.")
+            print(f"Nombre d'employés initial : {initial_emp_count} / Insérés : {inserted_emp_count}")
         except Exception as e:
             print(f"Erreur lors de l'exécution : {str(e)}")
 
