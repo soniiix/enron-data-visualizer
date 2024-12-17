@@ -22,8 +22,8 @@ class Email(models.Model):
 
 class Mail(models.Model):
     mail_id = models.CharField(primary_key=True, unique=True)
-    filepath = models.CharField(max_length=45)
-    objet = models.CharField(max_length=45)
+    filepath = models.CharField(max_length=100)
+    objet = models.CharField(max_length=100)
     date_mail = models.DateTimeField()
     message = models.TextField()
     is_reply = models.BooleanField()
