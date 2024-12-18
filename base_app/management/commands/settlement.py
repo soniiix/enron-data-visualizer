@@ -14,6 +14,18 @@ class Command(BaseCommand):
     EMPLOYEES_FILE = DATA_DIR / "employees.xml"
     MAIL_DIR = DATA_DIR / "maildir"
 
+    # Codes ANSI pour la stylisation de la console
+    COLORS = {
+        "PURPLE": "\033[95m",   # Violet clair
+        "CYAN": "\033[36m",     # Cyan
+        "OK": "\033[92m",       # Vert
+        "ERROR": "\033[91m",    # Rouge
+        "END_STYLE": "\033[0m", # Réinitialisation
+    }
+
+    def stylize(self, text, color):
+        return f"{self.COLORS.get(color, '')}{text}{self.COLORS['END_STYLE']}"
+
     def add_arguments(self, parser):
         parser.add_argument(
             '--folder',
@@ -22,21 +34,23 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write()
         # Phase de test
-        self.stdout.write("----- Suppression des données précédentes -----")    
+        self.stdout.write(self.stylize("SUPPRESSION DES DONNÉES PRÉCÉDENTES", "CYAN"))
         self.deleteAll()
 
         self.stdout.write()
-        self.stdout.write("----- Début du script -----")
 
         # Insertion en BDD des employés du fichier XML
-        self.stdout.write("-- Traitement de employees.xml --")
+        self.stdout.write(self.stylize("PEUPLEMENT DES EMPLOYÉS", "CYAN"))
+        self.stdout.write(f"Traitement de {self.stylize("employees.xml", "PURPLE")}...")
         self.populateEmployees()
 
-        # Insertion en BDD des mails
-        self.startPopulateMails(options)
+        self.stdout.write()
 
-        self.stdout.write("----- Fin du script -----")
+        # Insertion en BDD des mails
+        self.stdout.write(self.stylize("PEUPLEMENT DES MAILS", "CYAN"))
+        self.startPopulateMails(options)
         
 
 
@@ -85,12 +99,10 @@ class Command(BaseCommand):
                         new_email = Email(adrmail=email, employee_id=new_emp)
                         new_email.save()
                 except Exception as e:
-                    print(f"Erreur lors de l'insertion de l'employé : {e}")
+                    print(f"{self.stylize("Erreur lors de l'insertion de l'employé :", "ERROR")} {e}")
 
             # Affichage des statuts
-            print("Données enregistrées.")
-            print(f"Nombre d'employés initial: {initial_emp_count}")
-            print(f"Nombre d'employés insérés: {inserted_emp_count}")
+            print(self.stylize(f"{inserted_emp_count}/{initial_emp_count} employés insérés dans la base de données.", "OK"))
         except Exception as e:
             print(f"Erreur lors de l'exécution: {str(e)}")
 
@@ -104,25 +116,26 @@ class Command(BaseCommand):
         if folder_to_process:
             folder_path = os.path.join(self.MAIL_DIR, folder_to_process)
             if os.path.isdir(folder_path):
-                self.stdout.write(f"Processing single folder: {folder_path}")
+                self.stdout.write(f"Traitement d'un seul dossier: {self.stylize(folder_path, "PURPLE")}")
                 stats = self.populateMails(folder_path)
                 total_files += stats['total_files']
                 processed_files += stats['processed_files']
                 skipped_files += stats['skipped_files']
             else:
-                self.stdout.write(f"Specified folder '{folder_to_process}' not found.")
+                self.stdout.write(self.stylize(f"Specified folder '{folder_to_process}' not found.", "ERROR"))
                 return
         else:
             for folder in os.listdir(self.MAIL_DIR):
                 folder_path = os.path.join(self.MAIL_DIR, folder)
                 if os.path.isdir(folder_path):
-                    self.stdout.write(f"Processing folder: {folder_path}")
+                    self.stdout.write(f"Traitement du dossier : {self.stylize(folder_path, "PURPLE")}")
                     stats = self.populateMails(folder_path)
                     total_files += stats['total_files']
                     processed_files += stats['processed_files']
                     skipped_files += stats['skipped_files']
 
-        print("--- Statistiques finales ---")
+        print()
+        print(self.stylize("STATISTIQUES DU PEUPLEMENT DES MAILS", "CYAN"))
         print(f"Nombre de fichiers total: {total_files}")
         print(f"Fichiers traités: {processed_files}")
         print(f"Fichiers ignorés (en-tête manquant): {skipped_files}")
@@ -195,14 +208,14 @@ class Command(BaseCommand):
                         ))
                         processed_files += 1
                 except Exception as e:
-                    self.stdout.write(f"Error processing file {file_path}: {str(e)}")
+                    self.stdout.write(self.stylize(f"Error processing file {file_path}: {str(e)}", "ERROR"))
 
         try:
             with transaction.atomic():
                 Mail.objects.bulk_create(mail_objects, batch_size=1000)
-                self.stdout.write(f"Inserted {len(mail_objects)} mails into the database.")
+                self.stdout.write(self.stylize(f"{len(mail_objects)} mails insérés dans la base.", "OK"))
         except IntegrityError as e:
-            self.stdout.write(f"Database error: {e}")
+            self.stdout.write(f"{self.stylize("Erreur:", "ERROR")} {e}")
 
         return {
             'total_files': total_files,
@@ -301,6 +314,6 @@ class Command(BaseCommand):
             Mail.objects.all().delete()
             Email.objects.all().delete()
             Employee.objects.all().delete()
-            print("Toutes les données ont été supprimées.")
+            print(self.stylize("Toutes les données ont été supprimées.", "OK"))
         except Exception as e:
-            print(f"Erreur lors de la suppression : {str(e)}")
+            print(f"{self.stylize("Erreur lors de la suppression :", "ERROR")} {str(e)}")
