@@ -9,6 +9,7 @@ from datetime import datetime
 
 class Command(BaseCommand):
     help = 'Enron - Script de peuplement'
+
     # Constantes pour les chemins de fichier
     DATA_DIR = BASE_DIR.parent / "data"
     EMPLOYEES_FILE = DATA_DIR / "employees.xml"
@@ -23,17 +24,30 @@ class Command(BaseCommand):
         "END_STYLE": "\033[0m", # Réinitialisation
     }
 
-    def stylize(self, text, color):
+    def stylize(self, text: str, color: str) -> str:
+        """
+        Applique un style de couleur ANSI à une chaîne de texte.
+
+        Options disponibles : PURPLE, CYAN, OK, ERROR, END_STYLE.
+        """
         return f"{self.COLORS.get(color, '')}{text}{self.COLORS['END_STYLE']}"
 
+
     def add_arguments(self, parser):
+        """
+        Ajoute des arguments supplémentaires à la commande Django.
+        """
         parser.add_argument(
             '--folder',
             type=str,
             help="Permet de spécifier que l'on veut lancer le script sur un seul dossier."
         )
 
+
     def handle(self, *args, **options):
+        """
+        Méthode principale exécutée lorsqu'on lance la commande Django.
+        """
         self.stdout.write()
         # Phase de test
         self.stdout.write(self.stylize("SUPPRESSION DES DONNÉES PRÉCÉDENTES", "CYAN"))
@@ -53,11 +67,11 @@ class Command(BaseCommand):
         self.startPopulateMails(options)
         
 
-
     def populateEmployees(self):
         """
-        Fonction permettant de lire le contenu du fichier employees.xml,
-        et de créer un Employé en BDD pour chaque enfant XML.
+        Lit le fichier employees.xml et insère les employés dans la base de données.
+
+        Traite chaque élément XML pour créer des enregistrements Employee et Email associés.
         """
         try:
             # Récupérer le contenu du fichier XML
@@ -108,6 +122,9 @@ class Command(BaseCommand):
 
 
     def startPopulateMails(self, options):
+        """
+        Lance le processus de peuplement des mails à partir des fichiers dans maildir.
+        """
         total_files = 0
         processed_files = 0
         skipped_files = 0
@@ -142,6 +159,11 @@ class Command(BaseCommand):
 
 
     def populateMails(self, folder_path):
+        """
+        Traite un dossier de mails spécifié pour insérer chaque mail dans la base de données.
+
+        Retourne un dictionnaire contenant des statistiques sur le traitement.
+        """
         mail_objects = []
         email_cache = {}
         total_files = 0
@@ -159,7 +181,7 @@ class Command(BaseCommand):
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
                         content = file.read()
 
-                        headers = self.extract_mail_headers(content)
+                        headers = self.extractMailHeaders(content)
                         if not headers.get('message_id') or not headers.get('date'):
                             skipped_files += 1
                             continue
@@ -203,14 +225,15 @@ class Command(BaseCommand):
                             message=self.extractMessageBody(content),
                             is_reply=True if objet and "Re:" in objet else False,
                             main_message=main_message,
-                            date_main_message=first_message_date,  # datetime object
-                            email_address_id=email_obj  # ForeignKey: passer l'objet directement
+                            date_main_message=first_message_date,
+                            email_address_id=email_obj
                         ))
                         processed_files += 1
                 except Exception as e:
                     self.stdout.write(self.stylize(f"Error processing file {file_path}: {str(e)}", "ERROR"))
 
         try:
+            # Enregistrement de tous les mails de ce dossier en BDD.
             with transaction.atomic():
                 Mail.objects.bulk_create(mail_objects, batch_size=1000)
                 self.stdout.write(self.stylize(f"{len(mail_objects)} mails insérés dans la base.", "OK"))
@@ -224,7 +247,16 @@ class Command(BaseCommand):
         }
 
 
-    def extract_mail_headers(self, content):
+    def extractMailHeaders(self, content):
+        """
+        Extrait les en-têtes d'un mail (à partir de son contenu).
+
+        Retourne un dictionnaire contenant les clés suivantes :
+            - message_id
+            - date
+            - from
+            - subject
+        """
         headers = {}
         headers['message_id'] = self.safeExtract(r'^Message-ID: (.+)', content)
         headers['date'] = self.safeExtract(r'^Date: (.+)', content)
@@ -234,6 +266,9 @@ class Command(BaseCommand):
 
 
     def safeExtract(self, pattern, content):
+        """
+        Extrait une valeur à partir d'un contenu en utilisant une expression régulière.
+        """
         match_obj = re.search(pattern, content, re.MULTILINE)
         return match_obj.group(1).strip() if match_obj else None
 
@@ -250,14 +285,20 @@ class Command(BaseCommand):
             return None
 
 
-    def extractMessageBody(self, content):
+    def extractMessageBody(self, content: str) -> str:
+        """
+        Extrait le corps du message principal à partir du contenu du mail.
+        """
         match_obj = re.search(r'\n\n(.*)', content, re.DOTALL)
         if match_obj:
             return match_obj.group(1).strip()
         return ""
 
 
-    def extractFirstMessageOnly(self, content):
+    def extractFirstMessageOnly(self, content: str) -> str:
+        """
+        Extrait uniquement le premier message d'un mail.
+        """
         parts = content.split("\n\n", 1)
         if len(parts) < 2:
             return ""
@@ -267,7 +308,7 @@ class Command(BaseCommand):
         return body_cleaned.strip()
 
 
-    def findFirstMessageDate(self, content):
+    def findFirstMessageDate(self, content: str):
         """
         Retourne un datetime du premier message, ou None si aucune date n'est trouvée.
         """
@@ -289,7 +330,10 @@ class Command(BaseCommand):
         return min(dates) if dates else None
 
 
-    def getEmailObj(self, from_email, email_cache):
+    def getEmailObj(self, from_email: str, email_cache: dict) -> Email:
+        """
+        Récupère ou crée un objet Email pour une adresse email donnée.
+        """
         if from_email in email_cache:
             return email_cache[from_email]
 
@@ -310,6 +354,9 @@ class Command(BaseCommand):
 
 
     def deleteAll(self):
+        """
+        Supprime toutes les données contenues dans la BDD.
+        """
         try:
             Mail.objects.all().delete()
             Email.objects.all().delete()
