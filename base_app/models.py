@@ -3,9 +3,9 @@ from django.db import models
 
 class Employee(models.Model):
     id = models.AutoField(primary_key=True)
-    firstname = models.CharField(max_length=45)
-    lastname = models.CharField(max_length=45)
-    category = models.CharField(max_length=45, blank=True, null=True)
+    firstname = models.CharField(max_length=255)
+    lastname = models.CharField(max_length=255)
+    category = models.CharField(max_length=255, blank=True, null=True)
     
     class Meta:
         db_table = 'Employee'
@@ -13,7 +13,7 @@ class Employee(models.Model):
 
 class Email(models.Model):
     id = models.AutoField(primary_key=True)
-    adrmail = models.CharField(max_length=45)
+    adrmail = models.CharField(max_length=255)
     employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True, db_column="employee_id")
 
     class Meta:
@@ -23,7 +23,7 @@ class Email(models.Model):
 class Mail(models.Model):
     mail_id = models.CharField(primary_key=True, unique=True)
     filepath = models.CharField(max_length=100)
-    objet = models.CharField(max_length=100)
+    objet = models.CharField(max_length=300)
     date_mail = models.DateTimeField()
     message = models.TextField()
     is_reply = models.BooleanField()
