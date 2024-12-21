@@ -166,7 +166,7 @@ class Command(BaseCommand):
         Retourne un dictionnaire contenant des statistiques sur le traitement.
         """
         mail_objects = []
-        receiver_objects = []
+        receiver_objects = []  # Liste globale pour accumuler tous les receivers
         email_cache = {}
 
         # Définir des compteurs pour vérifier la cohérence
@@ -194,24 +194,25 @@ class Command(BaseCommand):
                         # Extraction et parsing de la date
                         date_mail = self.extractDate(headers['date'])
                         if not date_mail:
-                            # Si la date n'est pas parsée correctement, on saute
                             skipped_files += 1
                             continue
 
                         # Récupération ou création de l'objet Email de l'expéditeur
                         email_address = headers.get('from')
-                        if email_address:
-                            email_obj = self.getEmailObj(email_address, email_cache)
-                        else:
+                        if not email_address:
                             skipped_files += 1
                             continue
+                        email_obj = self.getEmailObj(email_address, email_cache)
 
+                        # Date du premier message (si c'est un enchaînement)
                         first_message_date = self.findFirstMessageDate(content)
-                        # Si aucune date pour le premier message, on peut réutiliser date_mail
                         if not first_message_date:
                             first_message_date = date_mail
 
+                        # Extraction de l'objet (sujet)
                         objet = headers.get('subject', '')[:255]
+
+                        # Détermination du message principal si "Re:" dans l'objet
                         main_message = None
                         if objet and "Re:" in objet:
                             main_message = self.extractFirstMessageOnly(content)
@@ -248,21 +249,20 @@ class Command(BaseCommand):
                     self.stdout.write(self.stylize(f"Error processing file {file_path}: {str(e)}", "ERROR"))
 
         try:
-            # Enregistrement de tous les mails et destinataires de ce dossier en BDD.
+            # Enregistrement de tous les mails et destinataires du dossier en BDD.
             with transaction.atomic():
                 Mail.objects.bulk_create(mail_objects, batch_size=1000)
                 self.stdout.write(self.stylize(f"{len(mail_objects)} mails insérés dans la base.", "OK"))
                 Receiver.objects.bulk_create(receiver_objects, batch_size=1000)
                 self.stdout.write(self.stylize(f"{len(receiver_objects)} destinataires insérés dans la base.", "OK"))
         except IntegrityError as e:
-            self.stdout.write(f"{self.stylize("Erreur:", "ERROR")} {e}")
+            self.stdout.write(f"{self.stylize('Erreur:', 'ERROR')} {e}")
 
         return {
             'total_files': total_files,
             'processed_files': processed_files,
             'skipped_files': skipped_files
         }
-
 
     def populateReceivers(self, to_addresses, mail_obj, email_cache):
         receiver_objects = []
