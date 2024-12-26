@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Enron | Accueil{% endblock %}
+
+{% block navbar %}
+    {# Définir quelle page est active #}
+    <li class="text-red-700">
+        <a href="{% url 'accueil' %}">Accueil</a>
+    </li>
+    <li class="hover:text-red-700">
+        <a href="{% url 'personnes' %}">Personnes</a>
+    </li>
+    <li class="hover:text-red-700">
+        <a href="{% url 'mails' %}">Mails</a>
+    </li>
+    <li class="hover:text-red-700">
+        <a href="{% url 'favoris' %}">Favoris</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+{% endblock %}

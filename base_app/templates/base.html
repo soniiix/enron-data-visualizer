@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Import de Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Import de la police Montserrat-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config={theme:{extend:{fontFamily:{sans:["Montserrat","sans-serif"]}}}};
+    </script>
+</head>
+
+<body class="h-screen bg-slate-100 font-sans font-semibold">
+    <header class="h-20 py-6 flex flex-col justify-center items-center">
+        <ul class="flex flex-row space-x-10 md:space-x-24 lg:space-x-36">
+            {% block navbar %}{% endblock %}
+        </ul>
+    </header>
+
+    {% block content %}{% endblock %}
+</body>
+
+</html>
