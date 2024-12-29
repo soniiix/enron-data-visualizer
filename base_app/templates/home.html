@@ -19,4 +19,120 @@
 {% endblock %}
 
 {% block content %}
+<div class="container mx-auto px-3 py-6 grid gap-6 max-w-[1280px]">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 lg:gap-5 w-full">
+        <!-- COLONNE GAUCHE -->
+        <div>
+            <!-- Première ligne (stats principales) -->
+            <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-3 w-full text-center mb-3">
+                <div class="flex flex-col items-center justify-between bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2">
+                    <h3 class="mb-3 text-sm sm:text-base lg:text-lg">Nombre total de mails envoyés</h3>
+                    <span class="text-red-700 font-bold text-lg sm:text-xl lg:text-2xl">157 000</span>
+                </div>
+                <div class="flex flex-col items-center justify-between bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2">
+                    <h3 class="mb-3 text-sm sm:text-base lg:text-lg">Nombre total de personnes</h3>
+                    <span class="text-red-700 font-bold text-lg sm:text-xl lg:text-2xl">330</span>
+                </div>
+                <div class="flex flex-col items-center justify-between bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2">
+                    <h3 class="mb-3 text-sm sm:text-base lg:text-lg">Période couverte</h3>
+                    <span class="text-red-700 font-bold text-lg sm:text-xl lg:text-2xl">2008 - 2020</span>
+                </div>
+            </div>
+            <!-- Deuxième ligne (Graphique) -->
+            <div class=" bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
+                <div class="relative">
+                    <div class="absolute right-0 text-sm sm:text-sm lg:text-base">
+                        <select class="bg-red-100 px-2 py-1 font-bold text-red-700 rounded-xl hover:cursor-pointer" name="">
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <h3 class="mb-2 text-base font-bold text-red-700 text-center sm:text-base lg:text-xl">12 250</h3>
+                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Nombre de mails moyens par mois</h3>
+                    <div class="h-[200px]">
+                    
+                    </div>
+                </div>
+            </div>
+            <!-- Troisième ligne (le plus d'échanges avec externes) -->
+            <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 lg:mb-3">
+                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Le plus d'échanges avec des externes</h3>
+                    <div class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-x-5 gap-y-1 text-xs text-center sm:text-sm lg:text-base">
+                        <span class="mb-1 text-neutral-500">Personne</span>
+                        <span class="mb-2 text-neutral-500">Pourcentage</span>
+                        <span class="mb-2 text-neutral-500"></span>
+                        <span class="mb-1">Sandrine Baguette</span>
+                        <span class="mb-2 text-red-700">(62%) - 280</span>
+                        <div class="mb-3">
+                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                        </div>
+                        <span class="mb-1">Baptiste Sardine</span>
+                        <span class="mb-2 text-red-700">(63%) - 250</span>
+                        <div class="mb-3">
+                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                        </div>
+                        <span class="mb-1">Olivier Pichet</span>
+                        <span class="mb-2 text-red-700">(57%) - 199</span>
+                        <div class="mb-3">
+                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- COLONNE DROITE -->
+        <div>
+            <div class="flex flex-col">
+                <!-- Première ligne (top 3 personnes) -->
+                <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
+                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Top 3 des personnes les plus actives</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-x-5 gap-y-2 text-xs text-center sm:text-sm lg:text-base">
+                        <span class="mb-1">Patrick Dupain</span>
+                        <div class="mb-2">
+                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                        </div>
+                        <span class="mb-1">Sébastien Fournier</span>
+                        <div class="mb-2">
+                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                        </div>
+                        <span class="mb-1">Samantha Marmite</span>
+                        <div class="mb-2">
+                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Deuxième ligne (top 3 mots) -->
+                <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
+                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Top 3 des mots les plus récurrents</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-x-14 gap-y-1 text-xs text-center sm:text-sm lg:text-base">
+                        <span class="mb-1">réunion</span>
+                        <span class="mb-2 text-red-700">186 fois</span>
+                        <span class="mb-1">eau</span>
+                        <span class="mb-2 text-red-700">151 fois</span>
+                        <span class="mb-1">pipeline</span>
+                        <span class="mb-2 text-red-700">120 fois</span>
+                    </div>
+                </div>
+                <!-- Troisième ligne (semaines avec le plus d'échanges) -->
+                <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
+                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Semaine avec le plus d'échanges</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-x-5 gap-y-1 text-xs text-center sm:text-sm lg:text-base">
+                        <span class="mb-1 text-neutral-500">Semaine</span>
+                        <span class="mb-2 text-neutral-500">Mails</span>
+                        <span class="mb-1">12/09/2010 - 19/09/2010</span>
+                        <span class="mb-2 text-red-700">756</span>
+                        <span class="mb-1">09/02/2013 - 16/02/2013</span>
+                        <span class="mb-2 text-red-700">602</span>
+                        <span class="mb-1">13/11/2015 - 20/11/2015</span>
+                        <span class="mb-2 text-red-700">601</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  
 {% endblock %}
