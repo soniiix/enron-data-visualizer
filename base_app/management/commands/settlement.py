@@ -110,7 +110,7 @@ class Command(BaseCommand):
                     
                     # Gérer la liste des emails de l'employé (+mailbox?)
                     for email in emails:
-                        new_email = Email(adrmail=email, employee_id=new_emp)
+                        new_email = Email(email_address=email, employee_id=new_emp)
                         new_email.save()
                 except Exception as e:
                     print(f"{self.stylize("Erreur lors de l'insertion de l'employé :", "ERROR")} {e}")
@@ -211,9 +211,9 @@ class Command(BaseCommand):
                         if not first_message_date:
                             first_message_date = date_mail
 
-                        objet = headers.get('subject', '')[:255]
+                        subject = headers.get('subject', '')[:255]
                         main_message = None
-                        if objet and "Re:" in objet:
+                        if subject and "Re:" in subject:
                             main_message = self.extractFirstMessageOnly(content)
                         if main_message is None:
                             main_message = ""
@@ -224,15 +224,15 @@ class Command(BaseCommand):
 
                         # Création d'une nouvelle instance de Mail
                         new_mail = Mail(
-                            mail_id=message_id,
+                            id=message_id,
                             filepath=relative_path,
-                            objet=objet,
+                            subject=subject,
                             date_mail=date_mail,
                             message=self.extractMessageBody(content),
-                            is_reply=True if objet and "Re:" in objet else False,
+                            is_reply=True if subject and "Re:" in subject else False,
                             main_message=main_message,
                             date_main_message=first_message_date,
-                            email_address_id=email_obj
+                            sender_email_id=email_obj
                         )
 
                         mail_objects.append(new_mail)
@@ -270,18 +270,17 @@ class Command(BaseCommand):
             if not address:
                 continue
 
-            email_obj = Email.objects.filter(adrmail=address).first()
+            email_obj = Email.objects.filter(email_address=address).first()
             if not email_obj:
                 external_employee = Employee.objects.create(firstname="Personne", lastname="Externe", category="Externe")
-                email_obj = Email.objects.create(adrmail=address, employee_id=external_employee)
+                email_obj = Email.objects.create(email_address=address, employee_id=external_employee)
 
             if not mail_obj:
                 continue
 
             receiver_objects.append(Receiver(
-                genre="Inconnu",
                 email_address_id=email_obj,
-                mail_identifiant=mail_obj
+                mail_id=mail_obj
             ))
         return receiver_objects
 
@@ -383,7 +382,7 @@ class Command(BaseCommand):
         if from_email in email_cache:
             return email_cache[from_email]
 
-        email_obj = Email.objects.filter(adrmail=from_email).first()
+        email_obj = Email.objects.filter(email_address=from_email).first()
         if not email_obj:
             external_employee = Employee.objects.create(
                 firstname="Personne",
@@ -391,7 +390,7 @@ class Command(BaseCommand):
                 category="Externe"
             )
             email_obj = Email.objects.create(
-                adrmail=from_email,
+                email_address=from_email,
                 employee_id=external_employee
             )
 
