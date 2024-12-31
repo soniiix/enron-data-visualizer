@@ -103,12 +103,10 @@
                 <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
                     <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Top 3 des mots les plus récurrents</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-x-14 gap-y-1 text-xs text-center sm:text-sm lg:text-base">
-                        <span class="mb-1">réunion</span>
-                        <span class="mb-2 text-red-700">186 fois</span>
-                        <span class="mb-1">eau</span>
-                        <span class="mb-2 text-red-700">151 fois</span>
-                        <span class="mb-1">pipeline</span>
-                        <span class="mb-2 text-red-700">120 fois</span>
+                        {% for word in top3_words %}
+                            <span class="mb-1">{{word.word}}</span>
+                            <span class="mb-2 text-red-700">{{word.count}} fois</span>
+                        {% endfor %}
                     </div>
                 </div>
                 <!-- Troisième ligne (semaines avec le plus d'échanges) -->
