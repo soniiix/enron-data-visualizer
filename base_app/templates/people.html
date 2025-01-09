@@ -3,20 +3,60 @@
 {% block title %}Enron | Personnes{% endblock %}
 
 {% block navbar %}
-    {# Définir quelle page est active #}
-    <li class="hover:text-red-700">
+    <li class="text-white font-bold">
         <a href="{% url 'accueil' %}">Accueil</a>
     </li>
-    <li class="text-red-700">
+    <li class="hover:text-white">
         <a href="{% url 'personnes' %}">Personnes</a>
     </li>
-    <li class="hover:text-red-700">
+    <li class="hover:text-white">
         <a href="{% url 'mails' %}">Mails</a>
     </li>
-    <li class="hover:text-red-700">
+    <li class="hover:text-white">
         <a href="{% url 'favoris' %}">Favoris</a>
     </li>
 {% endblock %}
 
 {% block content %}
+<div class="container mx-auto px-6 py-6">
+    <!-- Menu de sélection de catégorie -->
+    <div class="mb-6">
+        <label for="category-select" class="text-gray-600 font-semibold">Filtrer par catégorie</label>
+        <select id="category-select" class="block mt-2 p-2 border border-gray-300 rounded" onchange="window.location.href = this.value;">
+            <option value="?category=" {% if not request.GET.category %}selected{% endif %}>Toutes les catégories</option>
+            {% for category in categories %}
+                <option value="?category={{ category }}" {% if request.GET.category == category %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Tableau des employés -->
+    <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+        <table class="min-w-full table-auto">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-6 py-3 text-left text-gray-600">Prénom</th>
+                    <th class="px-6 py-3 text-left text-gray-600">Nom</th>
+                    <th class="px-6 py-3 text-left text-gray-600">Catégorie</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if employees %}
+                    {% for employee in employees %}
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-6 py-4 text-gray-800">{{ employee.firstname }}</td>
+                            <td class="px-6 py-4 text-gray-800">{{ employee.lastname }}</td>
+                            <td class="px-6 py-4 text-gray-800">{{ employee.category }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="px-6 py-4 text-center text-gray-800">Aucun employé trouvé.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}
