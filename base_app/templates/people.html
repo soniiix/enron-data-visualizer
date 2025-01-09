@@ -3,16 +3,17 @@
 {% block title %}Enron | Personnes{% endblock %}
 
 {% block navbar %}
-    <li class="text-white font-bold">
+    {# Définir quelle page est active #}
+    <li class="hover:text-red-700">
         <a href="{% url 'accueil' %}">Accueil</a>
     </li>
-    <li class="hover:text-white">
+    <li class="text-red-700">
         <a href="{% url 'personnes' %}">Personnes</a>
     </li>
-    <li class="hover:text-white">
+    <li class="hover:text-red-700">
         <a href="{% url 'mails' %}">Mails</a>
     </li>
-    <li class="hover:text-white">
+    <li class="hover:text-red-700">
         <a href="{% url 'favoris' %}">Favoris</a>
     </li>
 {% endblock %}
