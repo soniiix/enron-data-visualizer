@@ -43,9 +43,9 @@
                 <div class="relative">
                     <div class="absolute right-0 text-sm sm:text-sm lg:text-base">
                         <select class="bg-red-100 px-2 py-1 font-bold text-red-700 rounded-xl hover:cursor-pointer" name="">
-                            <option value="2020">2020</option>
-                            <option value="2019">2019</option>
-                            <option value="2018">2018</option>
+                            {% for year in years_list %}
+                                <option value={{year}}>{{year}}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>

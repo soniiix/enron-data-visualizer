@@ -22,6 +22,11 @@ def home(request):
     max_year = Mail.objects.filter(date_mail__year__range=YEARS_RANGE).latest("date_mail").date_mail.year
     covered_period = f"{min_year} - {max_year}"
 
+    # Faire une liste décroissante de chaque année de la période couverte pour la select box
+    years_list = []
+    for i in range(max_year, min_year-1, -1):
+        years_list.append(i)
+
     # Trouver les 3 personnes les plus actives (en fonction du nombre de mails envoyés)
     top3_people = (Employee.objects.annotate(email_count=Count('email__mail')).order_by('-email_count')[:3])
 
@@ -39,7 +44,9 @@ def home(request):
         "people_count": format(people_count, ',').replace(',', ' '),
         "covered_period": covered_period,
         "top3_people": top3_people,
-        "top3_words": top3_words
+        "top3_words": top3_words,
+        "years_list": years_list
+        
     }
     return render(request, "home.html", context)
 
