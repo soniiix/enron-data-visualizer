@@ -45,14 +45,22 @@ Pour avoir, en local, la même base de données que celle utilisée par le proje
     `C:\Program Files\PostgreSQL\17\bin`
 3. Validez et redémarrez votre terminal pour appliquer et tester les changements. La commande `psql --version` devrait afficher la version de PostgreSQL.
 
-### Étape 4 : Faire la migration depuis le projet Django
+### Étape 4 : Création de la base de données
+Connectez vous à postresql `psql -U postgres`
+   - Mot de passe : `postgres`
+   - Création de la base de données `create database enron;`
+   - Tapez `\l` pour vérifier si la base est crée
+
+
+### Étape 5 : Faire la migration depuis le projet Django
 
 - Placez vous en ligne de commandes dans le projet Django et tapez ``python manage.py migrate`` pour appliquer toutes les migrations à votre base de données locale.
 - Vérifiez la création des tables en ouvrant pgAdmin 4 et en allant dans **Server** > **PostgreSQL 17** > **Databases** > **enron** > **Schemas** > **public** > **Tables**
-- Vous pouvez également le vérifier en ouvrant un terminal et en tapant `psql -U postgres`
+- Ou bien en ligne de commandes `psql -U postgres`
    - Mot de passe : `postgres`
    - Tapez `\c enron`
    - Puis `\d`
+
 
 ## Script de peuplement
 
