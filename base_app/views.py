@@ -19,7 +19,7 @@ def home(request):
     YEARS_RANGE = ["1900", CURRENT_YEAR]
     EXCLUDED_WORDS = getExcludedWords()
 
-    # Récupérer l'année sélectionnée (par défaut, l'année en cours)
+    # Récupérer l'année sélectionnée dans le graphique (par défaut, l'année en cours)
     selected_year = int(request.GET.get('year', CURRENT_YEAR))
     
     # Nombre total de mails
@@ -48,7 +48,7 @@ def home(request):
         global_word_counts.update(words)  # Ajouter les occurrences des mots de ce message au compteur global
     top3_words = [{"word": word, "count": count} for word, count in global_word_counts.most_common(3)]  # Obtenir les 3 mots les plus fréquents
 
-    # Récupérer le nombre de mails envoyés par mois pour l'année choisie
+    # Récupérer le nombre de mails envoyés par mois pour l'année choisie dans le graphique
     mail_per_month = (
         Mail.objects.filter(date_mail__year=selected_year)
         .annotate(month=TruncMonth('date_mail'))
@@ -70,7 +70,7 @@ def home(request):
         "top3_people": top3_people,
         "top3_words": top3_words,
         "years_list": years_list,
-        "selected_year": selected_year,  # Année choisie
+        "selected_year": selected_year,  # Année choisie dans le graphique
         "mail_data": mail_data,  # Données pour le graphique
     }
 
