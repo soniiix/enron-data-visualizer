@@ -60,6 +60,8 @@ class Command(BaseCommand):
         self.stdout.write(self.stylize("PEUPLEMENT DES EMPLOYÉS", "CYAN"))
         self.stdout.write(f"Traitement de {self.stylize("employees.xml", "PURPLE")}...")
         self.populateEmployees()
+        # Création d'un employé fictif Externe qui regroupe toutes les personnes externes à Enron
+        Employee.objects.create(firstname="Personne", lastname="Externe", category="Externe")
 
         self.stdout.write()
 
@@ -279,7 +281,7 @@ class Command(BaseCommand):
 
             email_obj = Email.objects.filter(email_address=address).first()
             if not email_obj:
-                external_employee = Employee.objects.create(firstname="Personne", lastname="Externe", category="Externe")
+                external_employee = Employee.objects.get(firstname="Personne")
                 email_obj = Email.objects.create(email_address=address, employee_id=external_employee)
 
             if not mail_obj:
@@ -390,11 +392,7 @@ class Command(BaseCommand):
 
         email_obj = Email.objects.filter(email_address=from_email).first()
         if not email_obj:
-            external_employee = Employee.objects.create(
-                firstname="Personne",
-                lastname="Externe",
-                category="Externe"
-            )
+            external_employee = Employee.objects.get(firstname="Personne")
 
             # Créer l'email
             email_obj = Email.objects.create(
