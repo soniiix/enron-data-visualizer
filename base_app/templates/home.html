@@ -97,8 +97,15 @@
                     {% for person in top3_people %}
                         <span class="mb-1">{{person.firstname}} {{person.lastname}}</span>
                         <div class="mb-2">
-                            {# à faire: personnaliser le lien #}
-                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                            <a href="#" 
+                            class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border" 
+                            data-name="{{ person.firstname }} {{ person.lastname }}"
+                            data-category="{{ person.category }}"
+                            data-email="{{ person.email }}"
+                            data-firstname="{{ person.firstname }}"
+                            data-lastname="{{ person.lastname }}"
+                            data-id="{{ person.id }}"
+                            onclick="showInfo(event)">Ouvrir</a>
                         </div>
                     {% endfor %}
                     </div>
@@ -186,6 +193,48 @@
             }
         }
     });
+</script>
+
+<script>
+    function showInfo(event) {
+        event.preventDefault(); 
+
+        const name = event.target.getAttribute('data-name');
+        const category = event.target.getAttribute('data-category');
+        const email = event.target.getAttribute('data-email');
+        const firstname = event.target.getAttribute('data-firstname');
+        const lastname = event.target.getAttribute('data-lastname');
+
+        const tooltipContent = `
+            <div>
+                <strong>Nom :</strong> ${firstname} ${lastname}<br>
+                <strong>Catégorie :</strong> ${category}<br>
+                <strong>Email :</strong> ${email}
+            </div>
+        `;
+
+        const tooltip = document.createElement('div');
+        tooltip.classList.add('tooltip');
+        tooltip.innerHTML = tooltipContent;
+        
+        tooltip.style.position = 'absolute';
+        tooltip.style.backgroundColor = '#fff';
+        tooltip.style.border = '1px solid #ccc';
+        tooltip.style.borderRadius = '5px';
+        tooltip.style.padding = '10px';
+        tooltip.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        tooltip.style.zIndex = '1000';
+
+        const rect = event.target.getBoundingClientRect();
+        tooltip.style.left = `${rect.left}px`;
+        tooltip.style.top = `${rect.bottom + window.scrollY}px`;
+
+        document.body.appendChild(tooltip);
+
+        setTimeout(() => {
+            tooltip.remove();
+        }, 5000);  // L'infobulle disparaît après 5 secondes
+    }
 </script>
 
 {% endblock %}
