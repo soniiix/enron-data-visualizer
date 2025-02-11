@@ -174,6 +174,7 @@ class Command(BaseCommand):
         processed_files = 0
         skipped_files = 0
 
+        # Parcourir chaque fichier du dossier
         for root, _, files in os.walk(folder_path):
             for file_name in files:
                 total_files += 1
@@ -189,6 +190,7 @@ class Command(BaseCommand):
                             skipped_files += 1
                             continue
 
+                        # Récupération de l'id du mail
                         message_id = headers['message_id'][:255]
 
                         # Extraction et parsing de la date
@@ -237,6 +239,7 @@ class Command(BaseCommand):
                             sender_email_id=email_obj
                         )
 
+                        # Ajout de cette instance dans une liste d'instances qui seront enregistrées plus tard
                         mail_objects.append(new_mail)
 
                         # Extraction des destinataires et création des Receiver
@@ -247,7 +250,7 @@ class Command(BaseCommand):
                         processed_files += 1
 
                 except Exception as e:
-                    self.stdout.write(self.stylize(f"Error processing file {file_path}: {str(e)}", "ERROR"))
+                    self.stdout.write(self.stylize(f"Erreur lors du processus du fichier {file_path}: {str(e)}", "ERROR"))
 
         try:
             # Enregistrement de tous les mails et destinataires de ce dossier en BDD.
@@ -267,6 +270,9 @@ class Command(BaseCommand):
 
 
     def populateReceivers(self, to_addresses, mail_obj, email_cache):
+        """
+        Crée ou récupère un ou plusieurs récepteur(s) associé(s) au mail.
+        """
         receiver_objects = []
         for address in to_addresses:
             if not address:
@@ -288,9 +294,9 @@ class Command(BaseCommand):
 
 
     def extractToAddresses(self, to_field):
-            if not to_field:
-                return []
-            return re.findall(r'[\w\.-]+@[\w\.-]+', to_field)
+        if not to_field:
+            return []
+        return re.findall(r'[\w\.-]+@[\w\.-]+', to_field)
 
 
     def extractMailHeaders(self, content):
