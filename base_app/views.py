@@ -100,4 +100,5 @@ def mails(request):
 
 
 def favorites(request):
-    return render(request, "favorites.html")
+    employees = Employee.objects.all()
+    return render(request, "favorites.html", {'employees': employees})

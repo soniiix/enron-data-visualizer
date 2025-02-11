@@ -32,13 +32,14 @@
     </div>
 
     <!-- Tableau des employés -->
-    <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+    <div class="overflow-x-auto bg-white shadow-lg rounded-lg max-h-[400px]">
         <table class="min-w-full table-auto">
             <thead class="bg-gray-100">
                 <tr>
                     <th class="px-6 py-3 text-left text-gray-600">Prénom</th>
                     <th class="px-6 py-3 text-left text-gray-600">Nom</th>
                     <th class="px-6 py-3 text-left text-gray-600">Catégorie</th>
+                    <th class="px-6 py-3 text-left text-gray-600">Favoris</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,7 +48,13 @@
                         <tr class="border-b hover:bg-gray-50">
                             <td class="px-6 py-4 text-gray-800">{{ employee.firstname }}</td>
                             <td class="px-6 py-4 text-gray-800">{{ employee.lastname }}</td>
-                            <td class="px-6 py-4 text-gray-800">{{ employee.category }}</td>
+                            <td class="px-6 py-4 text-gray-800">{{ employee.category }}</td>                                                      
+                            <td class="px-6 py-4 text-gray-800">
+                                <i class="fa{% if employee.id in favorites %} s{% else %} r{% endif %} fa-star"
+                                   id="favorite-{{ employee.id }}" 
+                                   data-employee-id="{{ employee.id }}"
+                                   onclick="toggleFavorite(this)"></i>
+                            </td>                           
                         </tr>
                     {% endfor %}
                 {% else %}
@@ -60,4 +67,50 @@
     </div>
 </div>
 
+{% block scripts %}
+<script>
+    function toggleFavorite(starElement) {
+        let employeeId = starElement.getAttribute('data-employee-id');
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    
+        const index = favorites.indexOf(parseInt(employeeId));
+    
+        if (index === -1) {
+            favorites.push(parseInt(employeeId));
+        } else {
+            favorites.splice(index, 1);
+        }
+    
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    
+        updateFavorites();
+    }
+    
+    function updateFavorites() {
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    
+        document.querySelectorAll('.fa-star').forEach(star => {
+            const employeeId = parseInt(star.getAttribute('data-employee-id'));
+    
+            if (favorites.includes(employeeId)) {
+                star.classList.add('s');
+                star.classList.remove('r');
+                star.style.color = 'yellow'; 
+            } else {
+                star.classList.add('r'); 
+                star.classList.remove('s'); 
+                star.style.color = 'gray'; 
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateFavorites();
+    });
+</script>
+
 {% endblock %}
+
+
+{% endblock %}
+

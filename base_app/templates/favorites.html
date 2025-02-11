@@ -19,4 +19,54 @@
 {% endblock %}
 
 {% block content %}
+<div class="container mx-auto px-6 py-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Employés favoris</h2>
+    
+    <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+        <table class="min-w-full table-auto">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-6 py-3 text-left text-gray-600">Prénom</th>
+                    <th class="px-6 py-3 text-left text-gray-600">Nom</th>
+                    <th class="px-6 py-3 text-left text-gray-600">Catégorie</th>
+                </tr>
+            </thead>
+            <tbody id="favorites-table-body"></tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script id="employees_data" type="application/json">
+    {{ employees|json_script:"employees_data" }}
+</script>
+
+<script>
+  let employees = JSON.parse(document.getElementById('employees_data').textContent);
+
+  function displayFavorites() {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    
+    let tableBody = document.getElementById('favorites-table-body');
+    tableBody.innerHTML = '';
+
+    let favoriteEmployees = employees.filter(emp => favorites.includes(emp.id));
+    
+    favoriteEmployees.forEach(employee => {
+        let row = document.createElement('tr');
+        row.classList.add('border-b', 'hover:bg-gray-50');
+    
+        row.innerHTML = `
+            <td class="px-6 py-4 text-gray-800">${employee.firstname}</td>
+            <td class="px-6 py-4 text-gray-800">${employee.lastname}</td>
+            <td class="px-6 py-4 text-gray-800">${employee.category}</td>
+        `;
+    
+        tableBody.appendChild(row);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', displayFavorites);
+</script>
 {% endblock %}
