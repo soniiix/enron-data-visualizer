@@ -6,6 +6,7 @@ import os
 import re
 from django.db import transaction, IntegrityError
 from datetime import datetime
+from dateutil import parser
 
 class Command(BaseCommand):
     help = 'Enron - Script de peuplement'
@@ -202,10 +203,8 @@ class Command(BaseCommand):
 
                         # Récupération ou création de l'objet Email de l'expéditeur
                         email_address = headers.get('from')
-                        x_from = headers.get('x_from')
-
                         if email_address:
-                            email_obj = self.getEmailObj(email_address, x_from, email_cache)
+                            email_obj = self.getEmailObj(email_address, email_cache)
                         else:
                             skipped_files += 1
                             continue
@@ -302,7 +301,6 @@ class Command(BaseCommand):
     def extractMailHeaders(self, content):
         """
         Extrait les en-têtes d'un mail (à partir de son contenu).
-        Inclut le champ X-From.
         """
         headers = {}
         headers['message_id'] = self.safeExtract(r'^Message-ID: (.+)', content)
@@ -310,7 +308,6 @@ class Command(BaseCommand):
         headers['from'] = self.safeExtract(r'^From: (.+)', content)
         headers['to'] = self.safeExtract(r'^To: (.+)', content)
         headers['subject'] = self.safeExtract(r'^Subject: (.*)', content)
-        headers['x_from'] = self.safeExtract(r'^X-From: (.+)', content)  # Nouveau champ
         return headers
 
 
@@ -324,13 +321,18 @@ class Command(BaseCommand):
 
     def extractDate(self, raw_date):
         """
-        Retourne un objet datetime ou None
+        Retourne un objet datetime ou None.
         """
         try:
-            clean_date = re.sub(r'\s*\([^)]*\)', '', raw_date)
-            # Retourne directement un datetime
-            return datetime.strptime(clean_date, "%a, %d %b %Y %H:%M:%S %z")
-        except ValueError:
+            # Supprimer la partie avec le nom du fuseau horaire entre parenthèses (ex: (PST))
+            date_string = raw_date.split('(')[0].strip()
+
+            # Utiliser dateutil pour analyser la date
+            date_obj = parser.parse(date_string)
+
+            return date_obj
+        except ValueError as e:
+            print(f"Erreur lors du traitement de la date : {e}")
             return None
 
 
@@ -357,27 +359,6 @@ class Command(BaseCommand):
         return body_cleaned.strip()
 
 
-    def parseXFrom(self, x_from: str):
-        """
-        Parse le champ X-From pour extraire un nom et une adresse e-mail.
-        """
-        email_pattern = r'[\w\.-]+@[\w\.-]+'
-        name_pattern = r'["<](.*?)[">]|([\w\s]+)'
-        
-        # Extraire l'adresse email
-        email_match = re.search(email_pattern, x_from)
-        email = email_match.group(0) if email_match else None
-
-        # Extraire le nom
-        name_match = re.search(name_pattern, x_from)
-        if name_match:
-            name = name_match.group(1) or name_match.group(2)
-        else:
-            name = "Inconnu"  # Nom par défaut si introuvable
-
-        return name.strip() if name else None, email
-
-
     def findFirstMessageDate(self, content: str):
         """
         Retourne un datetime du premier message, ou None si aucune date n'est trouvée.
@@ -400,34 +381,25 @@ class Command(BaseCommand):
         return min(dates) if dates else None
 
 
-    def getEmailObj(self, from_email: str, x_from: str, email_cache: dict) -> Email:
+    def getEmailObj(self, from_email: str, email_cache: dict) -> Email:
         """
         Récupère ou crée un objet Email pour une adresse e-mail donnée.
-        Si l'adresse n'existe pas, crée un employé à partir de X-From.
         """
         if from_email in email_cache:
             return email_cache[from_email]
 
         email_obj = Email.objects.filter(email_address=from_email).first()
         if not email_obj:
-            # Extraire le nom à partir du champ X-From
-            name, email = self.parseXFrom(x_from)
-
-            # Si l'email est introuvable dans X-From, utiliser une valeur par défaut
-            if not email:
-                email = from_email
-
-            # Créer un nouvel employé
-            employee = Employee.objects.create(
-                firstname=name.split(" ")[0] if name else "Inconnu",
-                lastname=" ".join(name.split(" ")[1:]) if name else "Externe",
+            external_employee = Employee.objects.create(
+                firstname="Personne",
+                lastname="Externe",
                 category="Externe"
             )
 
             # Créer l'email
             email_obj = Email.objects.create(
-                email_address=email,
-                employee_id=employee
+                email_address=from_email,
+                employee_id=external_employee
             )
 
         email_cache[from_email] = email_obj
