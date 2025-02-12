@@ -75,9 +75,9 @@ function showInfo(event) {
 
     const tooltipContent = `
         <div>
-            <strong>Nom :</strong> ${firstname} ${lastname}<br>
-            <strong>Catégorie :</strong> ${category}<br>
-            <strong>Email :</strong> ${email}
+            <span class="font-bold">Nom :</span> ${firstname} ${lastname}<br>
+            <span class="font-bold">Catégorie :</span> ${category}<br>
+            <span class="font-bold">Email :</span> ${email}
         </div>
     `;
 
@@ -98,6 +98,10 @@ function showInfo(event) {
     tooltip.style.top = `${rect.bottom + window.scrollY}px`;
 
     document.body.appendChild(tooltip);
+
+    tooltip.addEventListener('click', (e) => {
+        tooltip.remove();
+    });
 
     setTimeout(() => {
         tooltip.remove();
