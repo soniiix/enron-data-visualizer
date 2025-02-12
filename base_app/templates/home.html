@@ -68,21 +68,16 @@
                         <span class="mb-1 text-neutral-500">Personne</span>
                         <span class="mb-2 text-neutral-500">Pourcentage</span>
                         <span class="mb-2 text-neutral-500"></span>
-                        <span class="mb-1">Sandrine Baguette</span>
-                        <span class="mb-2 text-red-700">(62%) - 280</span>
-                        <div class="mb-3">
-                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
-                        </div>
-                        <span class="mb-1">Baptiste Sardine</span>
-                        <span class="mb-2 text-red-700">(63%) - 250</span>
-                        <div class="mb-3">
-                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
-                        </div>
-                        <span class="mb-1">Olivier Pichet</span>
-                        <span class="mb-2 text-red-700">(57%) - 199</span>
-                        <div class="mb-3">
-                            <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
-                        </div>
+                        
+                        {% for employee in employees_with_most_exchanges %}
+                            <!-- Affichage des informations pour chaque employé -->
+                            <span class="mb-1">{{ employee.firstname }} {{ employee.lastname }}</span>
+                            <span class="mb-2 text-red-700">({{ employee.percentage }}%) - {{ employee.interactions_count }}</span>
+                            <div class="mb-3">
+                                <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                            </div>
+                        {% endfor %}
+                        
                     </div>
                 </div>
         </div>
