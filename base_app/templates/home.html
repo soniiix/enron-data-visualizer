@@ -39,28 +39,28 @@
                 </div>
             </div>
             <!-- Deuxième ligne (Graphique) -->
-<div class="bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
-    <div class="relative">
-        <div class="absolute right-0 text-sm sm:text-sm lg:text-base">
-            <!-- Sélecteur d'année -->
-            <form method="get" action="{% url 'accueil' %}">
-                <select class="bg-red-100 px-2 py-1 font-bold text-red-700 rounded-xl hover:cursor-pointer" name="year" onchange="this.form.submit()">
-                    {% for year in years_list %}
-                        <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
-                    {% endfor %}
-                </select>
-            </form>
-        </div>
-    </div>
-    <div class="flex flex-col items-center">
-        <h3 class="mb-2 text-base font-bold text-red-700 text-center sm:text-base lg:text-xl">{{ selected_year }}</h3>
-        <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Nombre de mails envoyés par mois</h3>
-        <!-- Conteneur du graphique -->
-        <div class="h-[300px] w-full">
-            <canvas id="mailChart"></canvas>
-        </div>
-    </div>
-</div>
+            <div class="bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
+                <div class="relative">
+                    <div class="absolute right-0 text-sm sm:text-sm lg:text-base">
+                        <!-- Sélecteur d'année -->
+                        <form method="get" action="{% url 'accueil' %}">
+                            <select class="bg-red-100 px-2 py-1 font-bold text-red-700 rounded-xl hover:cursor-pointer" name="year" onchange="this.form.submit()">
+                                {% for year in years_list %}
+                                    <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <h3 class="mb-2 text-base font-bold text-red-700 text-center sm:text-base lg:text-xl">{{ selected_year }}</h3>
+                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Nombre de mails envoyés par mois</h3>
+                    <!-- Conteneur du graphique -->
+                    <div class="h-[300px] w-full">
+                        <canvas id="mailChart"></canvas>
+                    </div>
+                </div>
+            </div>
             <!-- Troisième ligne (le plus d'échanges avec externes) -->
             <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 lg:mb-3">
                     <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Le plus d'échanges avec des externes</h3>
