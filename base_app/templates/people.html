@@ -63,7 +63,7 @@
                                    id="favorite-{{ employee.id }}" 
                                    data-employee-id="{{ employee.id }}"
                                    onclick="toggleFavorite(this)"></i>
-                            </td>                           
+                            </td>                          
                         </tr>
                     {% endfor %}
                 {% else %}
@@ -75,5 +75,49 @@
         </table>
     </div>
 </div>
+
+{% block scripts %}
+<script>
+    function toggleFavorite(starElement) {
+        const employeeId = parseInt(starElement.getAttribute('data-employee-id'));
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+        // Si l'employé est déjà dans les favoris, on le retire, sinon on l'ajoute
+        if (favorites.includes(employeeId)) {
+            favorites = favorites.filter(id => id !== employeeId);  // Retirer l'ID
+            starElement.classList.remove('s');
+            starElement.classList.add('r');
+            starElement.style.color = 'gray';
+        } else {
+            favorites.push(employeeId);  // Ajouter l'ID
+            starElement.classList.remove('r');
+            starElement.classList.add('s');
+            starElement.style.color = '#ffce33';
+        }
+
+        // Mettre à jour le localStorage
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
+    // Initialisation : mettre à jour l'état des étoiles au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        
+        document.querySelectorAll('.fa-star').forEach(star => {
+            const employeeId = parseInt(star.getAttribute('data-employee-id'));
+            
+            if (favorites.includes(employeeId)) {
+                star.classList.remove('r');
+                star.classList.add('s');
+                star.style.color = '#ffce33';
+            } else {
+                star.classList.remove('s');
+                star.classList.add('r');
+                star.style.color = 'gray';
+            }
+        });
+    });
+</script>
+{% endblock %}
 
 {% endblock %}
