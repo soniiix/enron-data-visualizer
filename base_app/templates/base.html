@@ -6,14 +6,12 @@
     <title>{% block title %}{% endblock %}</title>
     <!-- Import de Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Import de la police Montserrat-->
+    <!-- Import de la police Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <!-- Import de Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config={theme:{extend:{fontFamily:{sans:["Montserrat","sans-serif"]}}}};
-    </script>
 
     <style>
         .fa-star {
@@ -36,6 +34,9 @@
     </header>
 
     {% block content %}{% endblock %}
+
+    <!-- Import du fichier JS principal -->
+    <script src="../static/app.js"></script>
 </body>
 
 </html>
