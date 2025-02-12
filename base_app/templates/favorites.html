@@ -26,6 +26,7 @@
         <table class="min-w-full table-auto">
             <thead class="bg-gray-100">
                 <tr>
+                    <th class="px-6 py-3 text-left text-gray-600"></th>
                     <th class="px-6 py-3 text-left text-gray-600">Prénom</th>
                     <th class="px-6 py-3 text-left text-gray-600">Nom</th>
                     <th class="px-6 py-3 text-left text-gray-600">Catégorie</th>
@@ -35,10 +36,83 @@
         </table>
     </div>
 </div>
-{% endblock %}
 
 {% block scripts %}
 <script id="employees_data" type="application/json">
-    {{ employees|json_script:"employees_data" }}
+    {{ employees_json|safe }}
 </script>
+
+<script>
+  // Récupérer les données JSON depuis la balise <script>
+  const employees = JSON.parse(document.getElementById('employees_data').textContent);
+
+  // Fonction pour afficher les employés favoris
+  function displayFavorites() {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    
+    // Remplir la table avec les employés favoris
+    const tableBody = document.getElementById('favorites-table-body');
+    tableBody.innerHTML = ''; // Vider le tableau avant de le remplir
+
+    // Filtrer les employés favoris
+    const favoriteEmployees = employees.filter(emp => favorites.includes(emp.id));
+
+    // Ajouter chaque employé favori dans la table
+    favoriteEmployees.forEach(employee => {
+        const row = document.createElement('tr');
+        row.classList.add('border-b', 'hover:bg-gray-50');
+    
+        row.innerHTML = `
+            <td class="px-6 py-4 text-gray-800">
+                <i class="fa s fa-star"
+                   id="favorite-${employee.id}" 
+                   data-employee-id="${employee.id}"
+                   onclick="toggleFavorite(this)"
+                   style="color: #ffce33;"></i>
+            </td>
+            <td class="px-6 py-4 text-gray-800">${employee.firstname}</td>
+            <td class="px-6 py-4 text-gray-800">${employee.lastname}</td>
+            <td class="px-6 py-4 text-gray-800">${employee.category}</td>
+        `;
+    
+        tableBody.appendChild(row);
+    });
+  }
+
+  // Fonction pour gérer le clic sur l'étoile (ajouter/retirer des favoris)
+  function toggleFavorite(starElement) {
+    let employeeId = starElement.getAttribute('data-employee-id');
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    const index = favorites.indexOf(parseInt(employeeId));
+    
+    if (index !== -1) {
+      // Si l'employé est déjà dans les favoris, on le retire
+      favorites.splice(index, 1);
+      starElement.classList.remove('s');
+      starElement.classList.add('r');
+      starElement.style.color = 'gray';  // Modifier la couleur de l'étoile
+    } else {
+      // Sinon, on l'ajoute aux favoris
+      favorites.push(parseInt(employeeId));
+      starElement.classList.remove('r');
+      starElement.classList.add('s');
+      starElement.style.color = 'yellow';  // Modifier la couleur de l'étoile
+    }
+
+    // Sauvegarder les favoris dans localStorage
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+
+    // Mettre à jour les favoris affichés
+    displayFavorites();
+  }
+
+  // Afficher les favoris au chargement de la page
+  document.addEventListener('DOMContentLoaded', function() {
+    displayFavorites();
+  });
+</script>
+
+{% endblock %}
+
 {% endblock %}
