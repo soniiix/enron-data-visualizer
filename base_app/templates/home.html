@@ -92,19 +92,19 @@
             <div class="flex flex-col">
                 <!-- Première ligne (top 3 personnes) -->
                 <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
-                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Top 3 des personnes les plus actives</h3>
+                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Top 3 des emails les plus actifs</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-x-5 gap-y-2 text-xs text-center sm:text-sm lg:text-base">
-                    {% for person in top3_people %}
-                        <span class="mb-1">{{person.firstname}} {{person.lastname}}</span>
+                    {% for entry in top3_people %}
+                        <span class="mb-1">{{entry.email_address}}</span>
                         <div class="mb-2">
-                            <a href="#" 
+                            <a href="#"
                             class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border" 
-                            data-name="{{ person.firstname }} {{ person.lastname }}"
-                            data-category="{{ person.category }}"
-                            data-email="{{ person.email }}"
-                            data-firstname="{{ person.firstname }}"
-                            data-lastname="{{ person.lastname }}"
-                            data-id="{{ person.id }}"
+                            data-name="{{ entry.person.firstname }} {{ entry.person.lastname }}"
+                            data-category="{{ entry.person.category }}"
+                            data-email="{{ entry.email_address }}"
+                            data-firstname="{{ entry.person.firstname }}"
+                            data-lastname="{{ entry.person.lastname }}"
+                            data-id="{{ entry.person.id }}"
                             onclick="showInfo(event)">Ouvrir</a>
                         </div>
                     {% endfor %}

@@ -37,7 +37,22 @@ def home(request):
     years_list = list(range(max_year, min_year-1, -1))
 
     # Trouver les 3 personnes les plus actives (en fonction du nombre de mails envoyés)
-    top3_people = (Employee.objects.annotate(email_count=Count('email__mail')).order_by('-email_count')[:3])
+    top3_employee = (Employee.objects.annotate(email_count=Count('email__mail')).order_by('-email_count')[:3])
+    top3_people = []
+    # Récupérer l'email le plus utilisé de chaque employé
+    for employee in top3_employee:
+        email = (
+            Email.objects.filter(employee_id=employee)
+            .annotate(email_count=Count('mail'))
+            .order_by('-email_count')
+            .first()
+        )
+        top3_people.append(
+            {
+                "person": employee,
+                "email_address": email.email_address
+            }
+        )
 
     # Trouver les 3 mots les plus récurrents
     all_messages = Mail.objects.values_list("message", flat=True)  # Récupérer le message de chaque mail
