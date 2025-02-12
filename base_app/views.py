@@ -63,6 +63,51 @@ def home(request):
         "values": [m["count"] for m in mail_per_month],  # Nombre de mails par mois
     }
 
+    # Filtrer les employés internes
+    internal_employees = Employee.objects.exclude(category='Externe')
+
+    # Trouver les emails envoyés par des employés internes à des externes
+    sent_to_externals = Mail.objects.filter(
+        sender_email_id__employee_id__in=internal_employees,
+        receiver__email_address_id__employee_id__category='Externe'
+    )
+
+    # Trouver les emails reçus par des employés internes d'externes
+    received_from_externals = Mail.objects.filter(
+        receiver__email_address_id__employee_id__in=internal_employees,
+        sender_email_id__employee_id__category='Externe'
+    )
+
+    # Combiner les deux sets de mails
+    all_interactions = sent_to_externals | received_from_externals
+
+    # Compter les interactions pour chaque employé
+    employee_interactions = all_interactions.values('sender_email_id__employee_id').annotate(
+        interactions_count=Count('id')
+    ).order_by('-interactions_count')[:3]
+
+    # Calculer le total des échanges
+    total_interactions = all_interactions.count()
+
+    # Passer les 3 employés ayant le plus d'échanges au template
+    employees_with_most_exchanges = []
+    for interaction in employee_interactions:
+        employee = Employee.objects.get(id=interaction['sender_email_id__employee_id'])
+        interactions_count = interaction['interactions_count']
+        
+        # Calcul du pourcentage
+        if total_interactions > 0:
+            percentage = (interactions_count / total_interactions) * 100
+        else:
+            percentage = 0
+
+        employees_with_most_exchanges.append({
+            'firstname': employee.firstname,
+            'lastname': employee.lastname,
+            'interactions_count': interaction['interactions_count'],
+            'percentage': round(percentage, 2)
+        })
+
     context = {
         "email_count": format(email_count, ',').replace(',', ' '),
         "people_count": format(people_count, ',').replace(',', ' '),
@@ -72,9 +117,11 @@ def home(request):
         "years_list": years_list,
         "selected_year": selected_year,  # Année choisie dans le graphique
         "mail_data": mail_data,  # Données pour le graphique
+        "employees_with_most_exchanges": employees_with_most_exchanges
     }
-
+    
     return render(request, "home.html", context)
+
 
 
 def people(request):
