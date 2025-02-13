@@ -19,10 +19,7 @@ def home(request):
     CURRENT_YEAR = datetime.today().year
     YEARS_RANGE = ["1900", CURRENT_YEAR]
     EXCLUDED_WORDS = getExcludedWords()
-
-    # Récupérer l'année sélectionnée dans le graphique (par défaut, l'année en cours)
-    selected_year = int(request.GET.get('year', CURRENT_YEAR))
-    
+  
     # Nombre total de mails
     email_count = Mail.objects.count()
 
@@ -33,6 +30,9 @@ def home(request):
     min_year = Mail.objects.filter(date_mail__year__range=YEARS_RANGE).earliest("date_mail").date_mail.year
     max_year = Mail.objects.filter(date_mail__year__range=YEARS_RANGE).latest("date_mail").date_mail.year
     covered_period = f"{min_year} - {max_year}"
+
+    # Récupérer l'année sélectionnée dans le graphique (par défaut, l'année maximale en BDD)
+    selected_year = int(request.GET.get('year', max_year))
 
     # Faire une liste décroissante de chaque année de la période couverte pour la select box
     years_list = list(range(max_year, min_year-1, -1))
