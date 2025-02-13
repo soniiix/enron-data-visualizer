@@ -11,6 +11,24 @@ tailwind.config = {
 
 
 
+
+// PAGE D'ERREUR, POUR COPIER LA COMMANDE
+function copyToClipboard(cmdId) {
+    const text = document.getElementById(cmdId).innerText;
+    const icon = document.getElementById("icon-" + cmdId);
+    icon.className = "fa-solid fa-check";
+    icon.style.color="green";
+    // Remettre l'icône de base après 2.5 secondes
+    setTimeout(() => {
+        icon.className = "fa-regular fa-clone hover:cursor-pointer";
+        icon.style.color = "";
+    }, 2500);
+    navigator.clipboard.writeText(text);
+}
+
+
+
+
 // GRAPHIQUE AVEC CHART.JS
 // Configuration
 const ctx = document.getElementById('mailChart').getContext('2d');
