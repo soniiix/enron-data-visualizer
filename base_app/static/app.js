@@ -128,30 +128,27 @@ function showInfo(event) {
 
 
 // BARRE DE RECHERCHE
-function surligne(text, lettres) {
-    if (!lettres) return text;
-    const regex = new RegExp(`(${lettres})`, 'gi');
-    return text.replace(regex, '<span class="bg-yellow-300">$1</span>');
+function filterEmployees(){
+    document.querySelectorAll("input[type=text]")[0].addEventListener("input", function(){
+        var prenom = document.querySelectorAll("input[type=text]")[0].value.toLowerCase()
+        Array.from(document.querySelectorAll("#personne")).forEach(
+            (x) => {
+                var firstName = x.querySelectorAll("span")[0].textContent.toLowerCase();
+                if(firstName.includes(prenom)){x.style.display = ""}
+                else{x.style.display = "none"}
+            }
+        )
+    })
+
+    document.querySelectorAll("input[type=text]")[1].addEventListener("input", function(){
+        var nom = document.querySelectorAll("input[type=text]")[1].value.toLowerCase();
+        Array.from(document.querySelectorAll("#personne")).forEach(
+            (x) => {
+                var lastName = x.querySelectorAll("span")[1].textContent.toLowerCase();;
+                if(lastName.includes(nom)){x.style.display = ""}
+                else{x.style.display = "none"}
+            }
+        )
+    })
 }
-
-function filterEmployees(columnIndex) {
-    let searchValue = '';
-    if (columnIndex === 0) {
-        searchValue = document.getElementById('search-firstname').value.toLowerCase();
-    } else {
-        searchValue = document.getElementById('search-lastname').value.toLowerCase();
-    }
-    let rows = document.querySelectorAll('table tbody tr');
-
-    rows.forEach(row => {
-        let cell = row.cells[columnIndex];
-        let cellValue = row.cells[columnIndex].textContent.toLowerCase();
-
-        if (cellValue.includes(searchValue) || searchValue === '') {
-            cell.innerHTML = surligne(cell.textContent, searchValue);
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
+filterEmployees();

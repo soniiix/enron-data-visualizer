@@ -31,52 +31,43 @@
         </select>
     </div>
 
-    <div class="mb-6 flex gap-4">
-        <div>
-            <input type="text" id="search-firstname" class="block mt-2 p-2 border border-gray-300 rounded" placeholder="Prénom" oninput="filterEmployees(0)">
-        </div>
-        <div>
-            <input type="text" id="search-lastname" class="block mt-2 p-2 border border-gray-300 rounded" placeholder="Nom" oninput="filterEmployees(1)">
-        </div>
-    </div>
-
     <!-- Tableau des employés -->
     <div class="overflow-x-auto bg-white shadow-lg rounded-lg max-h-[400px]">
-        <table class="min-w-full table-auto">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="px-6 py-3 text-left text-gray-600">Prénom</th>
-                    <th class="px-6 py-3 text-left text-gray-600">Nom</th>
-                    <th class="px-6 py-3 text-left text-gray-600">Catégorie</th>
-                    <th class="px-6 py-3 text-left text-gray-600">Favoris</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if employees %}
-                    {% for employee in employees %}
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="px-6 py-4 text-gray-800">{{ employee.firstname }}</td>
-                            <td class="px-6 py-4 text-gray-800">{{ employee.lastname }}</td>
-                            <td class="px-6 py-4 text-gray-800">{{ employee.category }}</td>                                                      
-                            <td class="px-6 py-4 text-gray-800">
-                                <i class="fa{% if employee.id in favorites %} s{% else %} r{% endif %} fa-star"
-                                   id="favorite-{{ employee.id }}" 
-                                   data-employee-id="{{ employee.id }}"
-                                   onclick="toggleFavorite(this)"></i>
-                            </td>                          
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="3" class="px-6 py-4 text-center text-gray-800">Aucun employé trouvé.</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
+        <div class="flex justify-center mb-4 my-4">
+            <input type="text" id="prenomSearch" placeholder="Prénom" class="px-4 py-2 border rounded-lg mx-2" oninput="filterEmployees()"/>
+            <input type="text" id="nomSearch" placeholder="Nom" class="px-4 py-2 border rounded-lg mx-2" oninput="filterEmployees()"/>
+        </div>
+
+        <ul id="employeeList" class="min-w-full list-none justify-center">
+            <li class="bg-gray-100 flex px-6 py-3 text-left text-gray-600">
+                <span class="flex-1">Prénom</span>
+                <span class="flex-1">Nom</span>
+                <span class="flex-1">Catégorie</span>
+                <span class="flex-1">Favoris</span>
+            </li>
+            {% if employees %}
+                {% for employee in employees %}
+                    <li id="personne" class="bg-gray-200 mx-4 my-4 flex py-4 max-w-[200vh] rounded-lg items-center">
+                        <span class="flex-1 text-gray-800 mx-3">{{ employee.firstname }}</span>
+                        <span class="flex-1 text-gray-800">{{ employee.lastname }}</span>
+                        <span class="flex-1 text-gray-800">{{ employee.category }}</span>
+                        <span class="flex-1 text-gray-800">
+                            <i class="fa{% if employee.id in favorites %} s{% else %} r{% endif %} fa-star fa-2x"
+                               id="favorite-{{ employee.id }}" 
+                               data-employee-id="{{ employee.id }}"
+                               onclick="toggleFavorite(this)"></i>
+                        </span>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="px-6 py-4 text-center text-gray-800">Aucun employé trouvé.</li>
+            {% endif %}
+        </ul>
     </div>
 </div>
 
 {% block scripts %}
+<script src="../static/app.js"></script>
 <script>
     function toggleFavorite(starElement) {
         const employeeId = parseInt(starElement.getAttribute('data-employee-id'));
