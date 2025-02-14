@@ -108,10 +108,11 @@ Pour avoir, en local, la même base de données que celle utilisée par le proje
 3. Validez et redémarrez votre terminal pour appliquer et tester les changements. La commande `psql --version` devrait afficher la version de PostgreSQL.
 
 ### Étape 4 : Création de la base de données
-Connectez vous à postresql `psql -U postgres`
+Connectez vous à PostgreSQL en tapant `psql -U postgres`
    - Mot de passe : `postgres`
-   - Création de la base de données `create database enron;`
-   - Tapez `\l` pour vérifier si la base est crée
+
+Créez la base de données avec `create database enron;`
+   - Tapez `\l` pour vérifier si la base est créée
 
 
 ### Étape 5 : Faire la migration depuis le projet Django
@@ -133,6 +134,18 @@ python manage.py settlement
 ```
 
 Il permet d'insérer les données  initiales dans la base de données.
+
+Si vous ne vous voulez l'éxécuter que sur un dossier de mails en particulier, tapez :
+
+```bash
+python manage.py settlement --folder nom-dossier
+```
+
+Vous pouvez spécifier plusieurs dossiers en les séparant par des espaces : 
+
+```bash
+python manage.py settlement --folder dossier1 dossier2 dossier3
+```
 
 ## Contribution
 
