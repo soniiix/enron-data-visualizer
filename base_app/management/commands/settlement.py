@@ -41,7 +41,8 @@ class Command(BaseCommand):
         parser.add_argument(
             '--folder',
             type=str,
-            help="Permet de spécifier que l'on veut lancer le script sur un seul dossier."
+            nargs='+',
+            help="Permet de spécifier un ou plusieurs dossiers sur lesquels lancer le script."
         )
 
 
@@ -133,18 +134,19 @@ class Command(BaseCommand):
         processed_files = 0
         skipped_files = 0
 
-        folder_to_process = options['folder']
-        if folder_to_process:
-            folder_path = os.path.join(self.MAIL_DIR, folder_to_process)
-            if os.path.isdir(folder_path):
-                self.stdout.write(f"Traitement d'un seul dossier: {self.stylize(folder_path, "PURPLE")}")
-                stats = self.populateMails(folder_path)
-                total_files += stats['total_files']
-                processed_files += stats['processed_files']
-                skipped_files += stats['skipped_files']
-            else:
-                self.stdout.write(self.stylize(f"Specified folder '{folder_to_process}' not found.", "ERROR"))
-                return
+        folders_to_process = options['folder']
+        if folders_to_process:
+            for folder_to_process in folders_to_process:
+                folder_path = os.path.join(self.MAIL_DIR, folder_to_process)
+                if os.path.isdir(folder_path):
+                    self.stdout.write(f"Traitement d'un seul dossier: {self.stylize(folder_path, "PURPLE")}")
+                    stats = self.populateMails(folder_path)
+                    total_files += stats['total_files']
+                    processed_files += stats['processed_files']
+                    skipped_files += stats['skipped_files']
+                else:
+                    self.stdout.write(self.stylize(f"Le dossier spécifié '{folder_to_process}' n'a pas été trouvé.", "ERROR"))
+                    return
         else:
             for folder in os.listdir(self.MAIL_DIR):
                 folder_path = os.path.join(self.MAIL_DIR, folder)
