@@ -11,7 +11,69 @@ Ce projet vise à implémenter une application web permettant de visualiser et a
 L’objectif principal est l'implémentation d’une application web pour visualiser des informations pertinentes contenus les e-mails échangés entre les employés d’Enron (dont quelques externes).
 Un deuxième objectif est le développement d’un script d’automatisation du peuplement de la base de données, à partir des fichiers (texte plain) contenus dans le jeu de données (20 Go approximativement).
 
-## Configuration
+## Installation
+
+Voici comment installer le projet.
+
+### Étape 1 : Installation de Python
+Tout d'abord, il faut que vous ayez Python d'installé.
+Vous pouvez le vérifier en tapant dans un terminal :
+```python --version```
+
+Si vous voyez la version s'afficher, passez directement à l'étape 2.
+
+Sinon téléchargez-le sur le site officiel : [Python Download](https://www.python.org/downloads/)
+
+### Étape 2 : Installation de Django
+
+Installez Django avec pip :
+
+- Linux / macOS:
+   ```bash
+   python -m pip install Django==5.1.6
+   ```
+
+- Windows:
+   ```bash
+   py -m pip install Django==5.1.6
+   ```
+
+### Étape 3 : Téléchargement du projet
+
+Pour cette étape vous avez le choix entre :
+- Méthode 1 : Cloner le projet avec git en faisant 
+
+   ```
+   git clone https://github.com/vasccla/lp2425_projet2_enron.git
+   ```
+
+- Méthode 2 : Télécharger le zip via Github en cliquant sur le bouton **Code** > **Download ZIP**, puis extraire le zip.
+
+### Étape 4 : Installation des modules et librairies
+
+Voici tous les modules / librairies à installer pour que le projet fonctionne, avec la commande correspondante :
+- **psycopg** : 
+
+   ```bash
+   pip install "psycopg[binary]"
+   ```
+- **nltk** :
+
+   ```bash
+   pip install nltk
+   ```
+- **dateutil** :
+
+   ```bash
+   pip install python-dateutil
+   ```
+
+### Étape 5 : Téléchargement des données d'Enron
+
+***À compléter***
+
+
+## Configuration de la base de données
 
 Pour avoir, en local, la même base de données que celle utilisée par le projet Django, voici comment procéder :
 
