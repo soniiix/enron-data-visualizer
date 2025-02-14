@@ -32,7 +32,7 @@
     </div>
 
     <!-- Tableau des employés -->
-    <div class="overflow-x-auto bg-white shadow-lg rounded-lg max-h-[400px]">
+    <div class="overflow-x-auto rounded-lg max-h-[400px] bg-transparent">
         <div class="flex justify-center mb-4 my-4">
             <input type="text" id="prenomSearch" placeholder="Prénom" class="px-4 py-2 border rounded-lg mx-2" oninput="filterEmployees()"/>
             <input type="text" id="nomSearch" placeholder="Nom" class="px-4 py-2 border rounded-lg mx-2" oninput="filterEmployees()"/>
@@ -47,7 +47,7 @@
             </li>
             {% if employees %}
                 {% for employee in employees %}
-                    <li id="personne" class="bg-gray-200 mx-4 my-4 flex py-4 max-w-[200vh] rounded-lg items-center">
+                    <li id="personne" class="bg-white shadow-lg mx-4 my-4 flex py-4 max-w-[200vh] rounded-lg items-center">
                         <span class="flex-1 text-gray-800 mx-3">{{ employee.firstname }}</span>
                         <span class="flex-1 text-gray-800">{{ employee.lastname }}</span>
                         <span class="flex-1 text-gray-800">{{ employee.category }}</span>

@@ -128,27 +128,47 @@ function showInfo(event) {
 
 
 // BARRE DE RECHERCHE
-function filterEmployees(){
-    document.querySelectorAll("input[type=text]")[0].addEventListener("input", function(){
-        var prenom = document.querySelectorAll("input[type=text]")[0].value.toLowerCase()
-        Array.from(document.querySelectorAll("#personne")).forEach(
-            (x) => {
-                var firstName = x.querySelectorAll("span")[0].textContent.toLowerCase();
-                if(firstName.includes(prenom)){x.style.display = ""}
-                else{x.style.display = "none"}
-            }
-        )
-    })
 
-    document.querySelectorAll("input[type=text]")[1].addEventListener("input", function(){
-        var nom = document.querySelectorAll("input[type=text]")[1].value.toLowerCase();
-        Array.from(document.querySelectorAll("#personne")).forEach(
-            (x) => {
-                var lastName = x.querySelectorAll("span")[1].textContent.toLowerCase();;
-                if(lastName.includes(nom)){x.style.display = ""}
-                else{x.style.display = "none"}
-            }
-        )
-    })
+
+function filterEmployees() {
+    document.querySelectorAll("input[type=text]").forEach(input => {
+        input.addEventListener("input", function() {
+            var prenom = document.querySelectorAll("input[type=text]")[0].value.toLowerCase();
+            var nom = document.querySelectorAll("input[type=text]")[1].value.toLowerCase();
+
+            Array.from(document.querySelectorAll("#personne")).forEach((x) => {
+                var firstNameElement = x.querySelectorAll("span")[0];
+                var lastNameElement = x.querySelectorAll("span")[1];
+
+                var firstName = firstNameElement.innerText;
+                var lastName = lastNameElement.innerText;
+
+                highlightText(firstNameElement, firstName, prenom);
+                highlightText(lastNameElement, lastName, nom);
+
+                if (firstName.toLowerCase().includes(prenom) && lastName.toLowerCase().includes(nom)) {
+                    x.style.display = "";
+                } else {
+                    x.style.display = "none";
+                }
+            });
+        });
+    });
 }
+
+
+function highlightText(element, text, search) {
+    console.log("Texte original:", text);
+    console.log("Texte de recherche:", search);
+
+    element.innerHTML = text;
+
+    if (search && search.length > 0) {
+        var regex = new RegExp('(' + search + ')', 'gi');
+        var highlightedText = text.replace(regex, '<span style="background-color: yellow;">$1</span>');
+        
+        element.innerHTML = highlightedText;
+    }
+}
+
 filterEmployees();
