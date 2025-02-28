@@ -5,7 +5,7 @@ from datetime import datetime
 from django.db.models import Count
 import re
 from collections import Counter
-from base_app.useful_functions import getExcludedWords
+from base_app.utils import getExcludedWords
 from django.db.models.functions import TruncMonth
 import locale
 from django.core.exceptions import ObjectDoesNotExist

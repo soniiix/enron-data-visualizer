@@ -9,6 +9,6 @@ def getExcludedWords():
     """
     nltk.download('stopwords')
     stop_words = set(stopwords.words('english'))
-    custom_excluded_words = {"ect", "hou", "com"}
+    custom_excluded_words = {"ect", "hou", "com", "subject"}
     excluded_words = stop_words | custom_excluded_words
     return excluded_words
