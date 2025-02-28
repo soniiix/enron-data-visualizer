@@ -19,27 +19,33 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-6 py-6">
+<div class="container mx-auto px-3 py-6 grid gap-6 max-w-[1280px]">
     <!-- Menu de sélection de catégorie -->
-    <div class="mb-6">
-        <label for="category-select" class="text-gray-600 font-semibold">Filtrer par catégorie</label>
-        <select id="category-select" class="block mt-2 p-2 border border-gray-300 rounded" onchange="window.location.href = this.value;">
-            <option value="?category=" {% if not request.GET.category %}selected{% endif %}>Toutes les catégories</option>
-            {% for category in categories %}
-                <option value="?category={{ category }}" {% if request.GET.category == category %}selected{% endif %}>{{ category }}</option>
-            {% endfor %}
-        </select>
+    <div class="mb-6 flex flex-col max-[750px]:gap-y-5 min-[750px]:flex  min-[750px]:flex-row  min-[750px]:justify-between  min-[750px]:items-center">
+        <div class="flex flex-col">
+            <label for="category-select" class="text-red-700 font-semibold">Filtrer par catégorie</label>
+            <select id="category-select" class="max-w-[495px] block mt-2 p-2 border border-gray-300 rounded" onchange="window.location.href = this.value;">
+                <option value="?category=" {% if not request.GET.category %}selected{% endif %}>Toutes les catégories</option>
+                {% for category in categories %}
+                    <option value="?category={{ category }}" {% if request.GET.category == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="flex flex-col">
+            <label class="text-red-700 font-semibold">Rechercher</label>
+            <div class="mt-2">
+                <input type="text" id="prenomSearch" placeholder="Prénom" class="focus:outline-1 focus:outline-red-700 px-4 py-2 border rounded-lg mr-2" oninput="filterEmployees()"/>
+                <input type="text" id="nomSearch" placeholder="Nom" class="focus:outline-1 focus:outline-red-700 px-4 py-2 border rounded-lg" oninput="filterEmployees()"/>
+            </div>
+            
+        </div>
     </div>
 
     <!-- Tableau des employés -->
-    <div class="overflow-x-auto rounded-lg max-h-[400px] bg-transparent">
-        <div class="flex justify-center mb-4 my-4">
-            <input type="text" id="prenomSearch" placeholder="Prénom" class="px-4 py-2 border rounded-lg mx-2" oninput="filterEmployees()"/>
-            <input type="text" id="nomSearch" placeholder="Nom" class="px-4 py-2 border rounded-lg mx-2" oninput="filterEmployees()"/>
-        </div>
-
+    <div class="overflow-x-auto rounded-lg bg-transparent">
         <ul id="employeeList" class="min-w-full list-none justify-center">
-            <li class="bg-gray-100 flex px-6 py-3 text-left text-gray-600">
+            <li class="bg-gray-100 flex py-3 text-left text-gray-600 px-4">
                 <span class="flex-1">Prénom</span>
                 <span class="flex-1">Nom</span>
                 <span class="flex-1">Catégorie</span>
@@ -47,8 +53,8 @@
             </li>
             {% if employees %}
                 {% for employee in employees %}
-                    <li id="personne" class="bg-white shadow-lg mx-4 my-4 flex py-4 max-w-[200vh] rounded-lg items-center">
-                        <span class="flex-1 text-gray-800 mx-3">{{ employee.firstname }}</span>
+                    <li id="personne" class="bg-white px-4 shadow-lg my-4 flex py-4 w-full rounded-lg items-center">
+                        <span class="flex-1 text-gray-800">{{ employee.firstname }}</span>
                         <span class="flex-1 text-gray-800">{{ employee.lastname }}</span>
                         <span class="flex-1 text-gray-800">{{ employee.category }}</span>
                         <span class="flex-1 text-gray-800">
