@@ -98,7 +98,13 @@
                             <span class="mb-1">{{ employee.firstname }} {{ employee.lastname }}</span>
                             <span class="mb-2 text-red-700">({{ employee.percentage }}%) - {{ employee.interactions_count }}</span>
                             <div class="mb-3">
-                                <a href="#" class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border">Ouvrir</a>
+                                <a
+                                class="bg-red-100 cursor-pointer text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border" 
+                                data-category="{{ employee.category }}"
+                                data-email="{{ employee.email_address }}"
+                                data-firstname="{{ employee.firstname }}"
+                                data-lastname="{{ employee.lastname }}"
+                                onclick="showInfo(event)">Ouvrir</a>
                             </div>
                         {% endfor %}
                         
@@ -116,14 +122,12 @@
                     {% for entry in top3_people %}
                         <span class="mb-1">{{entry.email_address}}</span>
                         <div class="mb-2">
-                            <a href="#"
-                            class="bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border" 
-                            data-name="{{ entry.person.firstname }} {{ entry.person.lastname }}"
+                            <a
+                            class="bg-red-100 cursor-pointer text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border" 
                             data-category="{{ entry.person.category }}"
                             data-email="{{ entry.email_address }}"
                             data-firstname="{{ entry.person.firstname }}"
                             data-lastname="{{ entry.person.lastname }}"
-                            data-id="{{ entry.person.id }}"
                             onclick="showInfo(event)">Ouvrir</a>
                         </div>
                     {% endfor %}

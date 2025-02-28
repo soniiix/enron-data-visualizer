@@ -125,7 +125,6 @@ new Chart(ctx, {
 function showInfo(event) {
     event.preventDefault();
 
-    const name = event.target.getAttribute('data-name');
     const category = event.target.getAttribute('data-category');
     const email = event.target.getAttribute('data-email');
     const firstname = event.target.getAttribute('data-firstname');

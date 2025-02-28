@@ -122,6 +122,7 @@ def home(request):
             employees_with_most_exchanges.append({
                 'firstname': employee.firstname,
                 'lastname': employee.lastname,
+                'category': employee.category,
                 'interactions_count': interaction['interactions_count'],
                 'percentage': round(percentage, 2)
             })
