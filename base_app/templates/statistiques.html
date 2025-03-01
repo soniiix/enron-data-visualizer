@@ -1,0 +1,518 @@
+{% extends "base.html" %}
+
+{% block title %}Enron | Statistiques{% endblock %}
+
+{% block navbar %}
+  <li class="text-red-700"><a href="{% url 'accueil' %}">Accueil</a></li>
+  <li class="hover:text-red-700"><a href="{% url 'personnes' %}">Personnes</a></li>
+  <li class="hover:text-red-700"><a href="{% url 'mails' %}">Mails</a></li>
+  <li class="hover:text-red-700"><a href="{% url 'favoris' %}">Favoris</a></li>
+  <li class="hover:text-red-700"><a href="{% url 'statistiques' %}">Statistiques</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Statistiques des mails</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Graphique 1 -->
+    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+         onclick="openModal('folder', 'Répartition des mails par dossier', false)">
+      <h2 class="text-xl font-semibold mb-4">Répartition des mails par dossier</h2>
+      <div class="relative h-full">
+        <canvas id="folderChart" class="pointer-events-none h-full w-full"></canvas>
+      </div>
+    </div>
+
+    <!-- Graphique 2 -->
+    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+         onclick="openModal('evolution', 'Évolution du nombre de mails envoyés dans le temps', true)">
+      <h2 class="text-xl font-semibold mb-4">Évolution du nombre de mails envoyés dans le temps</h2>
+      <div class="relative h-full">
+        <canvas id="evolutionChart" class="pointer-events-none h-full w-full"></canvas>
+      </div>
+    </div>
+
+    <!-- Graphique 3 -->
+    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+         onclick="openModal('responses', 'Répartition Originaux/Réponses', false)">
+      <h2 class="text-xl font-semibold mb-4">Originaux vs Réponses</h2>
+      <div class="relative h-full">
+        <canvas id="responseChart" class="pointer-events-none h-full w-full"></canvas>
+      </div>
+    </div>
+
+    <!-- Graphique 4 -->
+    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+         onclick="openModal('senders', 'Top expéditeurs', false)">
+      <h2 class="text-xl font-semibold mb-4">Activité par expéditeur</h2>
+      <div class="relative h-full">
+        <canvas id="senderChart" class="pointer-events-none h-full w-full"></canvas>
+      </div>
+    </div>
+
+    <!-- New chart for message and subject length analysis -->
+    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+         onclick="openModal('length', 'Analyse de la longueur des messages et des sujets', false)">
+      <h2 class="text-xl font-semibold mb-4">Longueur des messages et des sujets</h2>
+      <div class="relative h-full">
+        <canvas id="lengthChart" class="pointer-events-none h-full w-full"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modalContainer" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-red-700 text-2xl">&times;</button>
+      <h2 class="text-xl font-semibold mb-4 text-center" id="modalTitle"></h2>
+
+      <!-- Sélection de la granularité -->
+      <div id="modalGranularity" class="mb-4 hidden">
+        <div class="flex gap-4 items-center">
+          <div>
+            <label for="modalGranularitySelect" class="font-semibold">Granularité :</label>
+            <select id="modalGranularitySelect" onchange="toggleDateInputs()" class="bg-red-100 px-2 py-1 text-red-700 rounded">
+              <option value="hour">Heure</option>
+              <option value="day">Jour</option>
+              <option value="month">Mois</option>
+              <option value="year">Année</option>
+              <option value="range">Plage de dates</option>
+            </select>
+          </div>
+          <div id="modalDateInputs" class="hidden flex-grow gap-4">
+            <div class="flex-1">
+              <label for="modalStartDate" class="font-semibold">Début :</label>
+              <input type="date" id="modalStartDate" class="bg-red-100 px-2 py-1 text-red-700 rounded w-full"
+                     min="1980-01-01" max="2002-12-31">
+            </div>
+            <div class="flex-1">
+              <label for="modalEndDate" class="font-semibold">Fin :</label>
+              <input type="date" id="modalEndDate" class="bg-red-100 px-2 py-1 text-red-700 rounded w-full"
+                     min="1980-01-01" max="2002-12-31">
+            </div>
+          </div>
+          <button class="bg-red-500 text-white px-4 py-2 rounded h-fit" onclick="updateGranularity()">
+            Appliquer
+          </button>
+        </div>
+      </div>
+
+      <div class="w-full h-[70vh] flex justify-center items-center">
+        <canvas id="modalChart"></canvas>
+      </div>
+    </div>
+</div>
+
+<!-- ===================================== -->
+<!-- Version Chart.js                     -->
+<!-- ===================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+<script>
+    // Gestion des instances de graphiques
+    let mainFolderChart = null;
+    let mainEvolutionChart = null;
+    let mainResponseChart = null;
+    let mainSenderChart = null;
+    let modalChartInstance = null;
+
+    // Initialisation des données
+    const parseData = (data) => JSON.parse(data.replace(/&quot;/g, '"'));
+    const folderData = parseData('{{ folder_data|escapejs }}');
+    const evolutionData = parseData('{{ line_data|escapejs }}');
+    const responseData = parseData('{{ response_data|escapejs }}');
+    const senderData = parseData('{{ sender_data|escapejs }}');
+
+    // Add lengthData to the list of parsed data
+    const lengthData = parseData('{{ length_data|escapejs }}');
+
+    document.addEventListener("DOMContentLoaded", () => {
+      mainFolderChart = initChart('folderChart', 'pie', folderData);
+      mainEvolutionChart = initChart('evolutionChart', 'line', evolutionData);
+      mainResponseChart = initChart('responseChart', 'doughnut', responseData);
+      mainSenderChart = initChart('senderChart', 'horizontalBar', senderData);
+      mainLengthChart = initChart('lengthChart', 'bar', lengthData);
+    });
+
+    function initChart(canvasId, type, data) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+      return new Chart(ctx, getChartConfig(type, data));
+    }
+
+    function getChartConfig(type, data) {
+      const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              boxWidth: 20,
+              font: { size: 14 },
+              padding: 20
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            bodyFont: { size: 14 },
+            titleFont: { size: 16 }
+          }
+        },
+        layout: {
+          padding: {
+            bottom: 40
+          }
+        }
+      };
+
+      // Configuration pour les graphiques circulaires
+      if (type === 'pie' || type === 'doughnut') {
+        return {
+          type: type,
+          data: {
+            labels: data.labels,
+            datasets: [{
+              data: data.values,
+              backgroundColor: type === 'doughnut' ?
+                ['#10B981', '#3B82F6'] : // Couleurs pour Originaux/Réponses
+                ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+              borderWidth: 2,
+              cutout: type === 'doughnut' ? '60%' : 0
+            }]
+          },
+          options: {
+            ...commonOptions,
+            plugins: {
+              ...commonOptions.plugins,
+              tooltip: {
+                ...commonOptions.plugins.tooltip,
+                callbacks: {
+                  label: (context) => {
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = ((context.raw / total) * 100).toFixed(1);
+                    return ` ${context.label}: ${context.raw} (${percentage}%)`;
+                  }
+                }
+              }
+            }
+          }
+        };
+      }
+
+      // Configuration pour le graphique linéaire
+      if (type === 'line') {
+        return {
+          type: 'line',
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: "Nombre de mails",
+              data: data.values,
+              borderColor: '#3B82F6',
+              backgroundColor: 'rgba(59, 130, 246, 0.05)',
+              tension: 0.3,
+              pointRadius: 4,
+              borderWidth: 2,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            ...commonOptions,
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: 'Période',
+                  font: { size: 14 }
+                },
+                grid: { display: false },
+                ticks: {
+                  maxRotation: 45,
+                  font: { size: 12 }
+                }
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: 'Volume',
+                  font: { size: 14 }
+                },
+                beginAtZero: true,
+                grid: { color: '#e5e7eb' },
+                ticks: { font: { size: 12 } }
+              }
+            }
+          }
+        };
+      }
+
+      // Configuration pour le graphique en barres
+      if (type === 'horizontalBar') {
+        return {
+          type: 'bar',
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: "Nombre de mails",
+              data: data.values,
+              backgroundColor: '#60A5FA',
+              borderColor: '#2563EB',
+              borderWidth: 1,
+              barPercentage: 0.8,
+              categoryPercentage: 0.9
+            }]
+          },
+          options: {
+            ...commonOptions,
+            indexAxis: 'y',
+            scales: {
+              x: {
+                beginAtZero: true,
+                grid: { color: '#e5e7eb' },
+                ticks: { 
+                  font: { size: 12 },
+                  stepSize: 1
+                }
+              },
+              y: {
+                grid: { display: false },
+                ticks: { 
+                  font: { size: 12 },
+                  mirror: true,
+                  z: 1
+                }
+              }
+            },
+            plugins: {
+              ...commonOptions.plugins,
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  title: (tooltipItems) => data.labels[tooltipItems[0].dataIndex],
+                  label: (context) => `${context.parsed.x} mails`
+                }
+              }
+            }
+          }
+        };
+      }
+
+      // Configuration for the bar chart (length analysis)
+      if (type === 'bar') {
+        return {
+          type: 'bar',
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: "Longueur moyenne",
+              data: data.values,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.5)',
+                'rgba(54, 162, 235, 0.5)',
+                'rgba(255, 206, 86, 0.5)',
+                'rgba(75, 192, 192, 0.5)'
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            ...commonOptions,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Nombre moyen de caractères'
+                }
+              }
+            },
+            plugins: {
+              ...commonOptions.plugins,
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (context) => `${context.parsed.y.toFixed(2)} caractères`
+                }
+              }
+            }
+          }
+        };
+      }
+    }
+
+    async function updateGranularity() {
+      const granularity = document.getElementById('modalGranularitySelect').value;
+      const params = new URLSearchParams({
+        granularity,
+        _: Date.now()
+      });
+
+      if (granularity === 'range') {
+        params.append('start_date', document.getElementById('modalStartDate').value || '1980-01-01');
+        params.append('end_date', document.getElementById('modalEndDate').value || '2002-12-31');
+      }
+
+      try {
+        document.getElementById('modalChart').classList.add('opacity-50');
+        const response = await fetch(`{% url 'statistiques' %}?${params}`, {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!response.ok) throw new Error(`Erreur HTTP! statut: ${response.status}`);
+
+        const newData = await response.json();
+
+        // Mise à jour des graphiques
+        if (mainEvolutionChart) {
+          mainEvolutionChart.data.labels = newData.labels;
+          mainEvolutionChart.data.datasets[0].data = newData.values;
+          mainEvolutionChart.update();
+        }
+
+        if (modalChartInstance) {
+          modalChartInstance.data.labels = newData.labels;
+          modalChartInstance.data.datasets[0].data = newData.values;
+          modalChartInstance.update();
+        }
+
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la mise à jour des données');
+      } finally {
+        document.getElementById('modalChart').classList.remove('opacity-50');
+      }
+    }
+
+    function openModal(chartType, title, showGranularity) {
+      document.getElementById('modalContainer').classList.remove('hidden');
+      document.getElementById('modalTitle').textContent = title;
+
+      const granularitySection = document.getElementById('modalGranularity');
+      granularitySection.classList.toggle('hidden', !showGranularity);
+      if (showGranularity) {
+        // Ne pas forcer la valeur afin de permettre la sélection "range"
+        toggleDateInputs();
+      }
+      let config;
+      switch(chartType) {
+        case 'folder':
+          config = getChartConfig('pie', folderData);
+          break;
+        case 'evolution':
+          config = getChartConfig('line', evolutionData);
+          break;
+        case 'responses':
+          config = getChartConfig('doughnut', responseData);
+          break;
+        case 'senders':
+          config = getChartConfig('horizontalBar', senderData);
+          break;
+        case 'length':
+          config = getChartConfig('bar', lengthData);
+          break;
+      }
+
+      if (modalChartInstance) modalChartInstance.destroy();
+      modalChartInstance = new Chart(
+        document.getElementById('modalChart').getContext('2d'),
+        config
+      );
+    }
+
+    function closeModal() {
+      document.getElementById('modalContainer').classList.add('hidden');
+      if (modalChartInstance) {
+        modalChartInstance.destroy();
+        modalChartInstance = null;
+      }
+    }
+
+    function toggleDateInputs() {
+      const show = document.getElementById('modalGranularitySelect').value === 'range';
+      document.getElementById('modalDateInputs').classList.toggle('hidden', !show);
+    }
+</script>
+
+<style>
+@layer components {
+  .chart-container {
+    min-height: 500px;
+    max-height: 600px;
+    padding-bottom: 2.5rem; /* Espace supplémentaire pour la légende */
+    transition: transform 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .chart-container {
+      min-height: 400px;
+      max-height: 500px;
+    }
+  }
+
+  #modalChart {
+    min-height: 400px;
+    max-height: 70vh;
+  }
+
+  @media (max-width: 1024px) {
+    .chart-container {
+      min-height: 400px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .grid-cols-3 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @media (max-width: 1280px) {
+    .lg\:grid-cols-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .lg\:grid-cols-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  #modalContainer canvas {
+    max-height: 70vh;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  #modalContainer .chartjs-size-monitor {
+    display: none;
+  }
+
+  .chart-container canvas {
+    pointer-events: none;
+  }
+
+  #modalContainer canvas {
+    pointer-events: auto !important;
+  }
+
+  .chartjs-render-monitor {
+    animation: none !important;
+  }
+}
+</style> 
+
+{% endblock %}

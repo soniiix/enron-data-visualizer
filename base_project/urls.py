@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from base_app import views
+from base_app.views import EmailListAPIView, EmailDetailAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +25,7 @@ urlpatterns = [
     path("personnes/", views.people, name="personnes"),
     path("mails/", views.mails, name="mails"),
     path("favoris/", views.favorites, name="favoris"),
+    path("statistiques/", views.statistiques, name="statistiques"),
+    path('api/emails/', EmailListAPIView.as_view(), name='email-list'),
+    path('api/emails/<str:id>/', EmailDetailAPIView.as_view(), name='email-detail'),
 ]
