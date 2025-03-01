@@ -16,7 +16,456 @@
     <li class="hover:text-red-700">
         <a href="{% url 'favoris' %}">Favoris</a>
     </li>
+    <li class="hover:text-red-700">
+        <a href="{% url 'statistiques' %}">Statistiques</a> 
+    </li>
 {% endblock %}
 
 {% block content %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste des Emails</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #F3F4F6;
+    }
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 1.5rem;
+    }
+    .search-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .search-form {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+    .search-field {
+      flex-grow: 1;
+    }
+    .search-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #374151;
+    }
+    .search-input, .search-select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.375rem;
+      font-size: 1rem;
+    }
+    .search-button {
+      background-color: #DC2626;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+    .search-button:hover {
+      background-color: #B91C1C;
+    }
+    .email-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .email-item {
+      border-bottom: 1px solid #E5E7EB;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .email-item:hover {
+      background-color: #F9FAFB;
+    }
+    .email-item strong {
+      color: #111827;
+    }
+    .email-item-date {
+      color: #6B7280;
+      font-size: 0.875rem;
+    }
+    #loader {
+      text-align: center;
+      padding: 1rem;
+      color: #6B7280;
+    }
+    /* Styles pour l'overlay et le modal */
+    #modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    #email-modal {
+      position: relative;
+      background: white;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      margin: 2.5vh auto;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      overflow-y: auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    #modal-header {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    #download-icon, #close-icon {
+      cursor: pointer;
+      font-size: 1.5rem;
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+      transition: background-color 0.2s;
+    }
+    #download-icon {
+      color: #DC2626;
+    }
+    #download-icon:hover {
+      background-color: #FEE2E2;
+    }
+    #close-icon {
+      color: #374151;
+    }
+    #close-icon:hover {
+      background-color: #F3F4F6;
+    }
+    #modal-content {
+      margin-top: 3rem;
+    }
+    .modal-field {
+      margin-bottom: 1rem;
+    }
+    .modal-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .modal-value {
+      color: #111827;
+    }
+    .modal-message {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: #F9FAFB;
+      border-radius: 0.375rem;
+      white-space: pre-wrap;
+    }
+    .date-range {
+      display: flex;
+      gap: 1rem;
+    }
+    .date-input {
+      flex: 1;
+    }
+
+    /* Bouton pour remonter en haut */
+    #back-to-top {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #dc2626;
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-size: 1rem;
+      z-index: 9999;
+    }
+    #back-to-top:hover {
+      background-color: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-title">Liste des Emails</div>
+  
+  <div class="search-container">
+    <form id="search-form" class="search-form">
+      <div class="search-field">
+        <label for="search-type" class="search-label">Rechercher dans</label>
+        <select id="search-type" class="search-select">
+          <option value="all">Tout</option>
+          <option value="id">ID</option>
+          <option value="filepath">Filepath</option>
+          <option value="subject">Subject</option>
+          <option value="message">Message</option>
+          <option value="date">Date</option>
+        </select>
+      </div>
+      <div class="search-field" id="text-search">
+        <label for="search-input" class="search-label">Recherche</label>
+        <input type="text" id="search-input" class="search-input" placeholder="Entrez votre recherche...">
+      </div>
+      <div class="search-field date-range" id="date-search" style="display: none;">
+        <div class="date-input">
+          <label for="start-date" class="search-label">Date de début</label>
+          <input type="text" id="start-date" class="search-input flatpickr-input" placeholder="Sélectionnez une date">
+        </div>
+        <div class="date-input">
+          <label for="end-date" class="search-label">Date de fin</label>
+          <input type="text" id="end-date" class="search-input flatpickr-input" placeholder="Sélectionnez une date">
+        </div>
+      </div>
+      <button type="submit" class="search-button">Rechercher</button>
+    </form>
+  </div>
+
+  <div class="email-container">
+    <div id="email-container">
+      <!-- Les emails seront ajoutés ici -->
+    </div>
+    <div id="loader">Chargement...</div>
+  </div>
+
+  <!-- Overlay et modal pour afficher le détail de l'email -->
+  <div id="modal-overlay">
+    <div id="email-modal">
+      <div id="modal-header">
+        <span id="download-icon" title="Télécharger en .txt">📥</span>
+        <span id="close-icon">&times;</span>
+      </div>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- Bouton pour remonter tout en haut de la page -->
+  <button id="back-to-top" title="Remonter en haut">↑</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      let lastDate = null;
+      let loading = false;
+      let noMoreEmails = false;
+      let currentSearchParams = {};
+
+      // Initialiser Flatpickr pour les sélecteurs de date
+      flatpickr("#start-date", {
+        dateFormat: "Y-m-d",
+        minDate: "1980-01-01",
+        maxDate: "2003-01-01"
+      });
+      flatpickr("#end-date", {
+        dateFormat: "Y-m-d",
+        minDate: "1980-01-01",
+        maxDate: "2003-01-01"
+      });
+
+      // Gérer l'affichage des champs de recherche en fonction du type sélectionné
+      document.getElementById('search-type').addEventListener('change', function() {
+        const textSearch = document.getElementById('text-search');
+        const dateSearch = document.getElementById('date-search');
+        if (this.value === 'date') {
+          textSearch.style.display = 'none';
+          dateSearch.style.display = 'flex';
+        } else {
+          textSearch.style.display = 'block';
+          dateSearch.style.display = 'none';
+        }
+      });
+
+      // Gérer la soumission du formulaire de recherche
+      document.getElementById('search-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const searchType = document.getElementById('search-type').value;
+        const searchInput = document.getElementById('search-input').value;
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+
+        currentSearchParams = {
+          type: searchType,
+          query: searchInput,
+          startDate: startDate,
+          endDate: endDate
+        };
+
+        // Réinitialiser la liste des emails et recharger avec les nouveaux paramètres
+        document.getElementById('email-container').innerHTML = '';
+        lastDate = null;
+        noMoreEmails = false;
+        loadEmails();
+      });
+
+      function createEmailItem(email) {
+        const div = document.createElement('div');
+        div.className = 'email-item';
+        div.innerHTML = `
+          <strong>${email.subject || '(Pas de sujet)'}</strong>
+          <div class="email-item-date">
+            ${email.sender_email_id} - ${new Date(email.date_mail).toLocaleString()}
+          </div>
+        `;
+        div.addEventListener('click', function() {
+          openEmailDetail(email.id);
+        });
+        return div;
+      }
+
+      async function loadEmails() {
+        if (loading || noMoreEmails) return;
+        loading = true;
+        let url = '/api/emails/';
+        const params = new URLSearchParams(currentSearchParams);
+        if (lastDate) {
+          params.append('lastDate', lastDate);
+        }
+        url += '?' + params.toString();
+
+        try {
+          const response = await fetch(url);
+          if (response.ok) {
+            const emails = await response.json();
+            if (emails.length === 0) {
+              noMoreEmails = true;
+              document.getElementById('loader').textContent = 'Aucun autre email à charger';
+            } else {
+              const container = document.getElementById('email-container');
+              emails.forEach(email => {
+                const item = createEmailItem(email);
+                container.appendChild(item);
+              });
+              lastDate = emails[emails.length - 1].date_mail;
+            }
+          } else {
+            console.error('Erreur lors du chargement des emails');
+          }
+        } catch (error) {
+          console.error('Erreur:', error);
+        } finally {
+          loading = false;
+        }
+      }
+
+      async function openEmailDetail(emailId) {
+        try {
+          const response = await fetch('/api/emails/' + emailId + '/');
+          if (response.ok) {
+            const email = await response.json();
+            document.getElementById('modal-content').innerHTML = `
+              <div class="modal-field">
+                <span class="modal-label">ID :</span>
+                <span class="modal-value">${email.id}</span>
+              </div>
+              <div class="modal-field">
+                <span class="modal-label">Filepath :</span>
+                <span class="modal-value">${email.filepath}</span>
+              </div>
+              <div class="modal-field">
+                <span class="modal-label">Date :</span>
+                <span class="modal-value">${new Date(email.date_mail).toLocaleString()}</span>
+              </div>
+              <div class="modal-field">
+                <span class="modal-label">Subject :</span>
+                <span class="modal-value">${email.subject || '(Pas de sujet)'}</span>
+              </div>
+              <div class="modal-message">
+                <div class="modal-label">Message :</div>
+                ${email.message}
+              </div>
+            `;
+            document.getElementById('download-icon').setAttribute('data-email', JSON.stringify(email));
+            document.getElementById('modal-overlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+          } else {
+            console.error("Erreur lors du chargement de l'email");
+          }
+        } catch (error) {
+          console.error("Erreur:", error);
+        }
+      }
+
+      function downloadEmailAsTxt() {
+        const emailDataStr = document.getElementById('download-icon').getAttribute('data-email');
+        if (!emailDataStr) return;
+        
+        const email = JSON.parse(emailDataStr);
+        const filename = `email_${email.id.replace(/[<>]/g, '')}.txt`;
+        
+        let content = `ID: ${email.id}\n`;
+        content += `Filepath: ${email.filepath}\n`;
+        content += `Date: ${new Date(email.date_mail).toLocaleString()}\n`;
+        content += `Subject: ${email.subject}\n\n`;
+        content += `Message:\n${email.message}`;
+        
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      }
+
+      function closeModal() {
+        document.getElementById('modal-overlay').style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          loadEmails();
+        }
+      }, { threshold: 1.0 });
+      observer.observe(document.getElementById('loader'));
+
+      document.getElementById('close-icon').addEventListener('click', closeModal);
+      document.getElementById('download-icon').addEventListener('click', downloadEmailAsTxt);
+      document.getElementById('modal-overlay').addEventListener('click', function(event) {
+        if (event.target === document.getElementById('modal-overlay')) {
+          closeModal();
+        }
+      });
+
+      // Fonctionnalité de "Remonter en haut"
+      const backToTopButton = document.getElementById('back-to-top');
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+          backToTopButton.style.display = 'block';
+        } else {
+          backToTopButton.style.display = 'none';
+        }
+      });
+      backToTopButton.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      loadEmails();
+    });
+  </script>
+</body>
+</html>
 {% endblock %}
