@@ -25,7 +25,7 @@ urlpatterns = [
     path("personnes/", views.people, name="personnes"),
     path("mails/", views.mails, name="mails"),
     path("favoris/", views.favorites, name="favoris"),
-    path("statistiques/", views.statistiques, name="statistiques"),
+    path("statistiques/", views.statistics, name="statistiques"),
     path('api/emails/', EmailListAPIView.as_view(), name='email-list'),
     path('api/emails/<str:id>/', EmailDetailAPIView.as_view(), name='email-detail'),
 ]

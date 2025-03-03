@@ -190,8 +190,8 @@ def favorites(request):
 
     return render(request, "favorites.html", context)
 
-def statistiques(request):
-    # 1. Répartition par dossier
+def statistics(request):
+    # Répartition par dossier
     folders = Mail.objects.values_list('filepath', flat=True)
     folder_counts = {}
     for path in folders:
@@ -199,10 +199,10 @@ def statistiques(request):
             folder = path.split('/')[1]
             folder_counts[folder] = folder_counts.get(folder, 0) + 1
 
-    # 2. Configuration granularité
+    # Configuration granularité
     granularity = request.GET.get('granularity', 'day')
 
-    # 3. Données Originaux/Réponses
+    # Données Originaux/Réponses
     response_data = {
         "labels": ["Originaux", "Réponses"],
         "values": [
@@ -215,14 +215,14 @@ def statistiques(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return handle_ajax_request(request)
 
-    # 4. Données temporelles
+    # Données temporelles
     qs, date_format = build_queryset(request, granularity)
     line_data = format_line_data(qs, granularity, date_format)
 
-    # 5. Activité des expéditeurs
+    # Activité des expéditeurs
     sender_data = get_sender_activity_data()
 
-    # 6. Analyse de la longueur des messages et des sujets
+    # Analyse de la longueur des messages et des sujets
     def get_avg_length(queryset, field):
         result = queryset.aggregate(avg_length=Avg(Length(field)))['avg_length']
         return float(result) if result is not None else 0.0
