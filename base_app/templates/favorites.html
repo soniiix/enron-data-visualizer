@@ -22,21 +22,20 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-6 py-6">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Employés favoris</h2>
-    
-    <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
-        <table class="min-w-full table-auto">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="px-6 py-3 text-left text-gray-600"></th>
-                    <th class="px-6 py-3 text-left text-gray-600">Prénom</th>
-                    <th class="px-6 py-3 text-left text-gray-600">Nom</th>
-                    <th class="px-6 py-3 text-left text-gray-600">Catégorie</th>
-                </tr>
-            </thead>
-            <tbody id="favorites-table-body"></tbody>
-        </table>
+<div class="container max-w-[1280px] mx-auto p-5">
+    <div class="text-2xl font-semibold text-gray-900 mb-6">Employés favoris</div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+        <ul class="min-w-full list-none justify-center">
+            <li class="bg-gray-100 flex py-3 text-left border-b text-gray-600 px-4 rounded-t-lg">
+                <span class="flex-1 text-left">Prénom</span>
+                <span class="flex-1 text-left">Nom</span>
+                <span class="flex-1 text-left">Catégorie</span>
+                <span class="flex-1 text-center">Retirer des favoris</span>
+            </li>
+            <div id="favorites-list">
+            </div>
+        <ul>
     </div>
 </div>
 
@@ -54,31 +53,31 @@
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     
     // Remplir la table avec les employés favoris
-    const tableBody = document.getElementById('favorites-table-body');
-    tableBody.innerHTML = ''; // Vider le tableau avant de le remplir
+    const favoritesList = document.getElementById('favorites-list');
+    favoritesList.innerHTML = ''; // Vider le tableau avant de le remplir
 
     // Filtrer les employés favoris
     const favoriteEmployees = employees.filter(emp => favorites.includes(emp.id));
 
     // Ajouter chaque employé favori dans la table
     favoriteEmployees.forEach(employee => {
-        const row = document.createElement('tr');
-        row.classList.add('border-b', 'hover:bg-gray-50');
+        const row = document.createElement('li');
+        row.className = "border-b border-gray-200 p-4 cursor-pointer transition-colors duration-200 hover:bg-gray-100 flex items-center";
     
         row.innerHTML = `
-            <td class="px-6 py-4 text-gray-800">
+            <span class="flex-1 text-gray-800">${employee.firstname}</span>
+            <span class="flex-1 text-gray-800">${employee.lastname}</span>
+            <span class="flex-1 text-gray-800">${employee.category}</span>
+            <span class="flex-1 text-center text-gray-800">
                 <i class="fa s fa-star"
                    id="favorite-${employee.id}" 
                    data-employee-id="${employee.id}"
                    onclick="toggleFavorite(this)"
                    style="color: #ffce33;"></i>
-            </td>
-            <td class="px-6 py-4 text-gray-800">${employee.firstname}</td>
-            <td class="px-6 py-4 text-gray-800">${employee.lastname}</td>
-            <td class="px-6 py-4 text-gray-800">${employee.category}</td>
+            </span>
         `;
     
-        tableBody.appendChild(row);
+        favoritesList.appendChild(row);
     });
   }
 
