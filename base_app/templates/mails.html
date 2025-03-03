@@ -14,10 +14,10 @@
         <a href="{% url 'mails' %}">Mails</a>
     </li>
     <li class="hover:text-red-700">
-        <a href="{% url 'favoris' %}">Favoris</a>
+        <a href="{% url 'statistiques' %}">Statistiques</a> 
     </li>
     <li class="hover:text-red-700">
-        <a href="{% url 'statistiques' %}">Statistiques</a> 
+        <a href="{% url 'favoris' %}">Favoris</a>
     </li>
 {% endblock %}
 
@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<div class="container mx-auto p-5 bg-gray-100">
+<div class="container max-w-[1280px] mx-auto p-5 bg-gray-100">
   <div class="text-2xl font-semibold text-gray-900 mb-6">Liste des Emails</div>
   
   <div class="bg-white rounded-lg shadow p-6 mb-6">
@@ -141,7 +141,7 @@
       const div = document.createElement('div');
       div.className = 'border-b border-gray-200 p-4 cursor-pointer transition-colors duration-200 hover:bg-gray-50';
       div.innerHTML = `
-        <strong>${email.subject || '(Pas de sujet)'}</strong>
+        <span class='font-bold'>${email.subject || '(Pas de sujet)'}</span>
         <div class="text-gray-500 text-sm">
           ${email.sender_email_id} - ${new Date(email.date_mail).toLocaleString()}
         </div>
@@ -194,24 +194,24 @@
           const email = await response.json();
           document.getElementById('modal-content').innerHTML = `
             <div class="mb-4">
-              <span class="font-semibold text-gray-700">ID :</span>
+              <span class="font-bold">ID :</span>
               <span class="text-gray-900">${email.id}</span>
             </div>
             <div class="mb-4">
-              <span class="font-semibold text-gray-700">Filepath :</span>
+              <span class="font-bold">Filepath :</span>
               <span class="text-gray-900">${email.filepath}</span>
             </div>
             <div class="mb-4">
-              <span class="font-semibold text-gray-700">Date :</span>
+              <span class="font-bold">Date :</span>
               <span class="text-gray-900">${new Date(email.date_mail).toLocaleString()}</span>
             </div>
             <div class="mb-4">
-              <span class="font-semibold text-gray-700">Subject :</span>
+              <span class="font-bold">Subject :</span>
               <span class="text-gray-900">${email.subject || '(Pas de sujet)'}</span>
             </div>
-            <div class="mt-6 p-4 bg-gray-50 rounded whitespace-pre-wrap">
-              <div class="font-semibold text-gray-700">Message :</div>
-              ${email.message}
+            <span class="font-bold">Message :</span>
+            <div class="mt-2 p-4 bg-gray-50 rounded border-2 whitespace-pre-line">
+                ${email.message}
             </div>
           `;
           document.getElementById('download-icon').setAttribute('data-email', JSON.stringify(email));

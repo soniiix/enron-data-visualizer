@@ -22,11 +22,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-6">
-  <h1 class="text-2xl font-bold mb-6">Statistiques des mails</h1>
+<div class="container max-w-[1280px] mx-auto px-4 py-6">
+  <h1 class="text-2xl font-semibold mb-6">Statistiques des mails</h1>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Graphique 1 -->
-    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
          onclick="openModal('folder', 'Répartition des mails par dossier', false)">
       <h2 class="text-xl font-semibold mb-4">Répartition des mails par dossier</h2>
       <div class="relative h-full">
@@ -35,7 +35,7 @@
     </div>
 
     <!-- Graphique 2 -->
-    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
          onclick="openModal('evolution', 'Évolution du nombre de mails envoyés dans le temps', true)">
       <h2 class="text-xl font-semibold mb-4">Évolution du nombre de mails envoyés dans le temps</h2>
       <div class="relative h-full">
@@ -44,7 +44,7 @@
     </div>
 
     <!-- Graphique 3 -->
-    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
          onclick="openModal('responses', 'Répartition Originaux/Réponses', false)">
       <h2 class="text-xl font-semibold mb-4">Originaux vs Réponses</h2>
       <div class="relative h-full">
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Graphique 4 -->
-    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
          onclick="openModal('senders', 'Top expéditeurs', false)">
       <h2 class="text-xl font-semibold mb-4">Activité par expéditeur</h2>
       <div class="relative h-full">
@@ -62,7 +62,7 @@
     </div>
 
     <!-- New chart for message and subject length analysis -->
-    <div class="chart-container bg-white p-6 rounded shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
          onclick="openModal('length', 'Analyse de la longueur des messages et des sujets', false)">
       <h2 class="text-xl font-semibold mb-4">Longueur des messages et des sujets</h2>
       <div class="relative h-full">
