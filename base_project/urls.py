@@ -17,15 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from base_app import views
-from base_app.views import EmailListAPIView, EmailDetailAPIView
+from base_app.views.home import home
+from base_app.views.people import people
+from base_app.views.mails import mails
+from base_app.views.statistics import statistics, EmailDetailAPIView, EmailListAPIView
+from base_app.views.favorites import favorites
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", views.home, name="accueil"), # PAGE D'ACCUEIL
-    path("personnes/", views.people, name="personnes"),
-    path("mails/", views.mails, name="mails"),
-    path("favoris/", views.favorites, name="favoris"),
-    path("statistiques/", views.statistics, name="statistiques"),
+    path("", home, name="accueil"), # PAGE D'ACCUEIL
+    path("personnes/", people, name="personnes"),
+    path("mails/", mails, name="mails"),
+    path("statistiques/", statistics, name="statistiques"),
+    path("favoris/", favorites, name="favoris"),
     path('api/emails/', EmailListAPIView.as_view(), name='email-list'),
     path('api/emails/<str:id>/', EmailDetailAPIView.as_view(), name='email-detail'),
 ]
