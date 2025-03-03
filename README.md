@@ -67,6 +67,11 @@ Voici tous les modules / librairies à installer pour que le projet fonctionne, 
    ```bash
    pip install python-dateutil
    ```
+- **rest framework** :
+
+   ```bash
+   pip install djangorestframework
+   ```
 
 ### Étape 5 : Téléchargement des données d'Enron
 
