@@ -26,64 +26,60 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<div class="container max-w-[1280px] mx-auto p-5 bg-gray-100">
-  <div class="text-2xl font-semibold text-gray-900 mb-6">Liste des Emails</div>
-  
-  <div class="bg-white rounded-lg shadow p-6 mb-6">
-    <form id="search-form" class="flex gap-4 items-end">
-      <div class="flex-1">
-        <label for="search-type" class="block mb-2 font-semibold text-gray-700">Rechercher dans</label>
-        <select id="search-type" class="w-full p-2 border border-gray-300 rounded">
-          <option value="all">Tout</option>
-          <option value="id">ID</option>
-          <option value="filepath">Filepath</option>
-          <option value="subject">Subject</option>
-          <option value="message">Message</option>
-          <option value="date">Date</option>
-        </select>
-      </div>
-      <div class="flex-1" id="text-search">
-        <label for="search-input" class="block mb-2 font-semibold text-gray-700">Recherche</label>
-        <input type="text" id="search-input" class="w-full p-2 border border-gray-300 rounded" placeholder="Entrez votre recherche...">
-      </div>
-      <div class="flex gap-4 flex-1 hidden" id="date-search">
-        <div class="flex-1">
-          <label for="start-date" class="block mb-2 font-semibold text-gray-700">Date de début</label>
-          <input type="text" id="start-date" class="w-full p-2 border border-gray-300 rounded flatpickr-input" placeholder="Sélectionnez une date">
-        </div>
-        <div class="flex-1">
-          <label for="end-date" class="block mb-2 font-semibold text-gray-700">Date de fin</label>
-          <input type="text" id="end-date" class="w-full p-2 border border-gray-300 rounded flatpickr-input" placeholder="Sélectionnez une date">
-        </div>
-      </div>
-      <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors duration-200">Rechercher</button>
-    </form>
-  </div>
-
-  <div class="bg-white rounded-lg shadow p-6 mb-6">
-    <div id="email-container">
-      <!-- Les emails seront ajoutés ici -->
+<div class="container max-w-[1280px] mx-auto p-5">
+    <div class="text-2xl font-semibold text-gray-900 mb-6">Liste des mails</div>
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <form id="search-form" class="flex gap-4 items-end">
+            <div class="flex-1">
+                <label for="search-type" class="block mb-2 font-semibold text-gray-700">Rechercher dans</label>
+                <select id="search-type" class="w-full p-2 border border-gray-300 rounded-lg">
+                <option value="all">Tout</option>
+                <option value="id">ID</option>
+                <option value="filepath">Filepath</option>
+                <option value="subject">Subject</option>
+                <option value="message">Message</option>
+                <option value="date">Date</option>
+                </select>
+            </div>
+            <div class="flex-1" id="text-search">
+                <label for="search-input" class="block mb-2 font-semibold text-gray-700">Recherche</label>
+                <input type="text" id="search-input" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="Entrez votre recherche...">
+            </div>
+            <div class="flex gap-4 flex-1 hidden" id="date-search">
+                <div class="flex-1">
+                <label for="start-date" class="block mb-2 font-semibold text-gray-700">Date de début</label>
+                <input type="text" id="start-date" class="w-full p-2 border border-gray-300 rounded-lg flatpickr-input" placeholder="Sélectionnez une date">
+                </div>
+                <div class="flex-1">
+                <label for="end-date" class="block mb-2 font-semibold text-gray-700">Date de fin</label>
+                <input type="text" id="end-date" class="w-full p-2 border border-gray-300 rounded-lg flatpickr-input" placeholder="Sélectionnez une date">
+                </div>
+            </div>
+            <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-200">Rechercher</button>
+        </form>
     </div>
-    <div id="loader" class="text-center p-4 text-gray-500">Chargement...</div>
-  </div>
-
-  <!-- Overlay et modal pour afficher le détail de l'email -->
-  <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex justify-center items-center">
-    <div id="email-modal" class="relative bg-white w-11/12 max-w-3xl max-h-[90vh] p-6 rounded overflow-y-auto shadow-lg">
-      <div id="modal-header" class="absolute top-4 right-4 flex gap-4 items-center">
-        <span id="download-icon" title="Télécharger en .txt" class="cursor-pointer text-xl p-1 rounded transition-colors duration-200 text-red-600 hover:bg-red-100">📥</span>
-        <span id="close-icon" class="cursor-pointer text-xl p-1 rounded transition-colors duration-200 text-gray-700 hover:bg-gray-100">&times;</span>
-      </div>
-      <div id="modal-content" class="mt-12"></div>
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div id="email-container">
+            <!-- Les emails seront ajoutés ici -->
+        </div>
+        <div id="loader" class="text-center p-4 text-gray-500">Chargement...</div>
     </div>
-  </div>
-
-  <!-- Bouton pour remonter tout en haut de la page -->
-  <button id="back-to-top" title="Remonter en haut" class="hidden fixed bottom-5 right-5 bg-red-600 text-white py-3 px-4 rounded cursor-pointer text-base z-50 hover:bg-red-700">↑</button>
+    <!-- Overlay et modal pour afficher le détail de l'email -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex justify-center items-center">
+        <div id="email-modal" class="relative bg-white w-11/12 max-w-3xl max-h-[90vh] p-6 rounded-lg overflow-y-auto shadow-lg">
+            <div id="modal-header" class="absolute top-4 right-4 flex gap-4 items-center">
+                <span id="download-icon" title="Télécharger en .txt" class="cursor-pointer text-xl p-1 rounded-lg transition-colors duration-200 text-red-600 hover:bg-red-100">📥</span>
+                <span id="close-icon" title="Fermer" class="cursor-pointer text-xl p-1 rounded-lg transition-colors duration-200 text-gray-700 hover:bg-gray-100">&times;</span>
+            </div>
+            <div id="modal-content" class="mt-12"></div>
+        </div>
+    </div>
+    <!-- Bouton pour remonter tout en haut de la page -->
+    <button id="back-to-top" title="Remonter en haut" class="hidden fixed bottom-5 right-5 bg-red-600 text-white py-3 px-4 rounded cursor-pointer text-base z-50 hover:bg-red-700">↑</button>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     let lastDate = null;
     let loading = false;
     let noMoreEmails = false;
@@ -91,199 +87,201 @@
 
     // Initialiser Flatpickr pour les sélecteurs de date
     flatpickr("#start-date", {
-      dateFormat: "Y-m-d",
-      minDate: "1980-01-01",
-      maxDate: "2003-01-01"
+        dateFormat: "Y-m-d",
+        minDate: "1980-01-01",
+        maxDate: "2003-01-01"
     });
     flatpickr("#end-date", {
-      dateFormat: "Y-m-d",
-      minDate: "1980-01-01",
-      maxDate: "2003-01-01"
+        dateFormat: "Y-m-d",
+        minDate: "1980-01-01",
+        maxDate: "2003-01-01"
     });
 
     // Gérer l'affichage des champs de recherche en fonction du type sélectionné
     document.getElementById('search-type').addEventListener('change', function() {
-      const textSearch = document.getElementById('text-search');
-      const dateSearch = document.getElementById('date-search');
-      if (this.value === 'date') {
-        textSearch.classList.add('hidden');
-        dateSearch.classList.remove('hidden');
-        dateSearch.classList.add('flex');
-      } else {
-        textSearch.classList.remove('hidden');
-        dateSearch.classList.add('hidden');
-      }
+        const textSearch = document.getElementById('text-search');
+        const dateSearch = document.getElementById('date-search');
+        if (this.value === 'date') {
+            textSearch.classList.add('hidden');
+            dateSearch.classList.remove('hidden');
+            dateSearch.classList.add('flex');
+        } else {
+            textSearch.classList.remove('hidden');
+            dateSearch.classList.add('hidden');
+        }
     });
 
     // Gérer la soumission du formulaire de recherche
     document.getElementById('search-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const searchType = document.getElementById('search-type').value;
-      const searchInput = document.getElementById('search-input').value;
-      const startDate = document.getElementById('start-date').value;
-      const endDate = document.getElementById('end-date').value;
+        e.preventDefault();
+        const searchType = document.getElementById('search-type').value;
+        const searchInput = document.getElementById('search-input').value;
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
 
-      currentSearchParams = {
-        type: searchType,
-        query: searchInput,
-        startDate: startDate,
-        endDate: endDate
-      };
+        currentSearchParams = {
+            type: searchType,
+            query: searchInput,
+            startDate: startDate,
+            endDate: endDate
+        };
 
-      // Réinitialiser la liste des emails et recharger avec les nouveaux paramètres
-      document.getElementById('email-container').innerHTML = '';
-      lastDate = null;
-      noMoreEmails = false;
-      loadEmails();
+        // Réinitialiser la liste des emails et recharger avec les nouveaux paramètres
+        document.getElementById('email-container').innerHTML = '';
+        lastDate = null;
+        noMoreEmails = false;
+        loadEmails();
     });
 
     function createEmailItem(email) {
-      const div = document.createElement('div');
-      div.className = 'border-b border-gray-200 p-4 cursor-pointer transition-colors duration-200 hover:bg-gray-50';
-      div.innerHTML = `
-        <span class='font-bold'>${email.subject || '(Pas de sujet)'}</span>
-        <div class="text-gray-500 text-sm">
-          ${email.sender_email_id} - ${new Date(email.date_mail).toLocaleString()}
-        </div>
-      `;
-      div.addEventListener('click', function() {
-        openEmailDetail(email.id);
-      });
-      return div;
+        const div = document.createElement('div');
+        div.className = 'border-b border-gray-200 p-4 cursor-pointer transition-colors duration-200 hover:bg-gray-100';
+        div.innerHTML = `
+    <span class='font-bold'>${email.subject || '(Pas de sujet)'}</span>
+    <div class="text-gray-500 text-sm">
+        ${email.sender_email_id} - ${new Date(email.date_mail).toLocaleString()}
+    </div>
+    `;
+        div.addEventListener('click', function() {
+            openEmailDetail(email.id);
+        });
+        return div;
     }
 
     async function loadEmails() {
-      if (loading || noMoreEmails) return;
-      loading = true;
-      let url = '/api/emails/';
-      const params = new URLSearchParams(currentSearchParams);
-      if (lastDate) {
-        params.append('lastDate', lastDate);
-      }
-      url += '?' + params.toString();
-
-      try {
-        const response = await fetch(url);
-        if (response.ok) {
-          const emails = await response.json();
-          if (emails.length === 0) {
-            noMoreEmails = true;
-            document.getElementById('loader').textContent = 'Aucun autre email à charger';
-          } else {
-            const container = document.getElementById('email-container');
-            emails.forEach(email => {
-              const item = createEmailItem(email);
-              container.appendChild(item);
-            });
-            lastDate = emails[emails.length - 1].date_mail;
-          }
-        } else {
-          console.error('Erreur lors du chargement des emails');
+        if (loading || noMoreEmails) return;
+        loading = true;
+        let url = '/api/emails/';
+        const params = new URLSearchParams(currentSearchParams);
+        if (lastDate) {
+            params.append('lastDate', lastDate);
         }
-      } catch (error) {
-        console.error('Erreur:', error);
-      } finally {
-        loading = false;
-      }
+        url += '?' + params.toString();
+
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                const emails = await response.json();
+                if (emails.length === 0) {
+                    noMoreEmails = true;
+                    document.getElementById('loader').textContent = 'Aucun autre email à charger';
+                } else {
+                    const container = document.getElementById('email-container');
+                    emails.forEach(email => {
+                        const item = createEmailItem(email);
+                        container.appendChild(item);
+                    });
+                    lastDate = emails[emails.length - 1].date_mail;
+                }
+            } else {
+                console.error('Erreur lors du chargement des emails');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+        } finally {
+            loading = false;
+        }
     }
 
     async function openEmailDetail(emailId) {
-      try {
-        const response = await fetch('/api/emails/' + emailId + '/');
-        if (response.ok) {
-          const email = await response.json();
-          document.getElementById('modal-content').innerHTML = `
-            <div class="mb-4">
-              <span class="font-bold">ID :</span>
-              <span class="text-gray-900">${email.id}</span>
-            </div>
-            <div class="mb-4">
-              <span class="font-bold">Filepath :</span>
-              <span class="text-gray-900">${email.filepath}</span>
-            </div>
-            <div class="mb-4">
-              <span class="font-bold">Date :</span>
-              <span class="text-gray-900">${new Date(email.date_mail).toLocaleString()}</span>
-            </div>
-            <div class="mb-4">
-              <span class="font-bold">Subject :</span>
-              <span class="text-gray-900">${email.subject || '(Pas de sujet)'}</span>
-            </div>
-            <span class="font-bold">Message :</span>
-            <div class="mt-2 p-4 bg-gray-50 rounded border-2 whitespace-pre-line">
-                ${email.message}
-            </div>
-          `;
-          document.getElementById('download-icon').setAttribute('data-email', JSON.stringify(email));
-          document.getElementById('modal-overlay').classList.remove('hidden');
-          document.body.style.overflow = 'hidden';
-        } else {
-          console.error("Erreur lors du chargement de l'email");
+        try {
+            const response = await fetch('/api/emails/' + emailId + '/');
+            if (response.ok) {
+                const email = await response.json();
+                document.getElementById('modal-content').innerHTML = `
+        <div class="mb-4">
+            <span class="font-bold">ID :</span>
+            <span class="text-gray-900">${email.id}</span>
+        </div>
+        <div class="mb-4">
+            <span class="font-bold">Filepath :</span>
+            <span class="text-gray-900">${email.filepath}</span>
+        </div>
+        <div class="mb-4">
+            <span class="font-bold">Date :</span>
+            <span class="text-gray-900">${new Date(email.date_mail).toLocaleString()}</span>
+        </div>
+        <div class="mb-4">
+            <span class="font-bold">Subject :</span>
+            <span class="text-gray-900">${email.subject || '(Pas de sujet)'}</span>
+        </div>
+        <span class="font-bold">Message :</span>
+        <div class="mt-2 p-4 bg-gray-50 rounded border-2 whitespace-pre-line">
+            ${email.message}
+        </div>
+        `;
+                document.getElementById('download-icon').setAttribute('data-email', JSON.stringify(email));
+                document.getElementById('modal-overlay').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                console.error("Erreur lors du chargement de l'email");
+            }
+        } catch (error) {
+            console.error("Erreur:", error);
         }
-      } catch (error) {
-        console.error("Erreur:", error);
-      }
     }
 
     function downloadEmailAsTxt() {
-      const emailDataStr = document.getElementById('download-icon').getAttribute('data-email');
-      if (!emailDataStr) return;
-      
-      const email = JSON.parse(emailDataStr);
-      const filename = `email_${email.id.replace(/[<>]/g, '')}.txt`;
-      
-      let content = `ID: ${email.id}\n`;
-      content += `Filepath: ${email.filepath}\n`;
-      content += `Date: ${new Date(email.date_mail).toLocaleString()}\n`;
-      content += `Subject: ${email.subject}\n\n`;
-      content += `Message:\n${email.message}`;
-      
-      const element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-      element.setAttribute('download', filename);
-      element.style.display = 'none';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
+        const emailDataStr = document.getElementById('download-icon').getAttribute('data-email');
+        if (!emailDataStr) return;
+
+        const email = JSON.parse(emailDataStr);
+        const filename = `email_${email.id.replace(/[<>]/g, '')}.txt`;
+
+        let content = `ID: ${email.id}\n`;
+        content += `Filepath: ${email.filepath}\n`;
+        content += `Date: ${new Date(email.date_mail).toLocaleString()}\n`;
+        content += `Subject: ${email.subject}\n\n`;
+        content += `Message:\n${email.message}`;
+
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
     }
 
     function closeModal() {
-      document.getElementById('modal-overlay').classList.add('hidden');
-      document.body.style.overflow = 'auto';
+        document.getElementById('modal-overlay').classList.add('hidden');
+        document.body.style.overflow = 'auto';
     }
 
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        loadEmails();
-      }
-    }, { threshold: 1.0 });
+        if (entries[0].isIntersecting) {
+            loadEmails();
+        }
+    }, {
+        threshold: 1.0
+    });
     observer.observe(document.getElementById('loader'));
 
     document.getElementById('close-icon').addEventListener('click', closeModal);
     document.getElementById('download-icon').addEventListener('click', downloadEmailAsTxt);
     document.getElementById('modal-overlay').addEventListener('click', function(event) {
-      if (event.target === document.getElementById('modal-overlay')) {
-        closeModal();
-      }
+        if (event.target === document.getElementById('modal-overlay')) {
+            closeModal();
+        }
     });
 
     // Fonctionnalité de "Remonter en haut"
     const backToTopButton = document.getElementById('back-to-top');
     window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 300) {
-        backToTopButton.classList.remove('hidden');
-      } else {
-        backToTopButton.classList.add('hidden');
-      }
+        if (window.pageYOffset > 300) {
+            backToTopButton.classList.remove('hidden');
+        } else {
+            backToTopButton.classList.add('hidden');
+        }
     });
     backToTopButton.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     });
 
     loadEmails();
-  });
+});
 </script>
 {% endblock %}
