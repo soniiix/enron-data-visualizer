@@ -22,98 +22,118 @@
 {% endblock %}
 
 {% block content %}
+
+{% if error == True %}
+    <div class="container mx-auto px-3 py-6 grid gap-6 max-w-[1280px]">
+        <div class="flex flex-col bg-white w-full p-2 sm:p-6 rounded-xl border-red-700 border-2 text-black">
+            <span>
+                Erreur, aucune donnée présente dans la base de données.
+                <br><br>
+                Veuillez vous assurer d'éxécuter le script de peuplement au moins 1 fois avant de consulter le site.
+                <br>
+                Pour cela, positionnez-vous à la racine du projet en ligne de commandes et tapez :
+                <div class="flex flex-row justify-between items-center my-3 max-w-[500px] bg-gray-200 rounded-xl p-3">
+                    <code id="cmd1">python manage.py settlement</code>
+                    <i class="fa-regular fa-clone hover:cursor-pointer" id="icon-cmd1" onclick="copyToClipboard('cmd1')"></i>
+                </div>
+                Ou bien si vous voulez l'éxécuter sur un dossier de mails en particulier, tapez :
+                <div class="flex flex-row justify-between items-center my-3 max-w-[500px] bg-gray-200 rounded-xl p-3">
+                    <code id="cmd2">python manage.py settlement --folder nom-dossier</code>
+                    <i class="fa-regular fa-clone hover:cursor-pointer" id="icon-cmd2" onclick="copyToClipboard('cmd2')"></i>
+                </div>
+            </span>
+        </div>
+    </div>
+{% else %}
+
 <div class="container max-w-[1280px] mx-auto px-4 py-6">
-  <h1 class="text-2xl font-semibold mb-6">Statistiques des mails</h1>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <!-- Graphique 1 -->
-    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
-         onclick="openModal('folder', 'Répartition des mails par dossier', false)">
-      <h2 class="text-xl font-semibold mb-4">Répartition des mails par dossier</h2>
-      <div class="relative h-full">
-        <canvas id="folderChart" class="pointer-events-none h-full w-full"></canvas>
-      </div>
-    </div>
-
-    <!-- Graphique 2 -->
-    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
-         onclick="openModal('evolution', 'Évolution du nombre de mails envoyés dans le temps', true)">
-      <h2 class="text-xl font-semibold mb-4">Évolution du nombre de mails envoyés dans le temps</h2>
-      <div class="relative h-full">
-        <canvas id="evolutionChart" class="pointer-events-none h-full w-full"></canvas>
-      </div>
-    </div>
-
-    <!-- Graphique 3 -->
-    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
-         onclick="openModal('responses', 'Répartition Originaux/Réponses', false)">
-      <h2 class="text-xl font-semibold mb-4">Originaux vs Réponses</h2>
-      <div class="relative h-full">
-        <canvas id="responseChart" class="pointer-events-none h-full w-full"></canvas>
-      </div>
-    </div>
-
-    <!-- Graphique 4 -->
-    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
-         onclick="openModal('senders', 'Top expéditeurs', false)">
-      <h2 class="text-xl font-semibold mb-4">Activité par expéditeur</h2>
-      <div class="relative h-full">
-        <canvas id="senderChart" class="pointer-events-none h-full w-full"></canvas>
-      </div>
-    </div>
-
-    <!-- New chart for message and subject length analysis -->
-    <div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
-         onclick="openModal('length', 'Analyse de la longueur des messages et des sujets', false)">
-      <h2 class="text-xl font-semibold mb-4">Longueur des messages et des sujets</h2>
-      <div class="relative h-full">
-        <canvas id="lengthChart" class="pointer-events-none h-full w-full"></canvas>
-      </div>
-    </div>
-  </div>
+	<h1 class="text-2xl font-semibold mb-6">Statistiques des mails</h1>
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+		<!-- Graphique 1 -->
+		<div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+			onclick="openModal('folder', 'Répartition des mails par dossier', false)">
+			<h2 class="text-xl font-semibold mb-4">Répartition des mails par dossier</h2>
+			<div class="relative h-full">
+				<canvas id="folderChart" class="pointer-events-none h-full w-full"></canvas>
+			</div>
+		</div>
+		<!-- Graphique 2 -->
+		<div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+			onclick="openModal('evolution', 'Évolution du nombre de mails envoyés dans le temps', true)">
+			<h2 class="text-xl font-semibold mb-4">Évolution du nombre de mails envoyés dans le temps</h2>
+			<div class="relative h-full">
+				<canvas id="evolutionChart" class="pointer-events-none h-full w-full"></canvas>
+			</div>
+		</div>
+		<!-- Graphique 3 -->
+		<div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+			onclick="openModal('responses', 'Répartition Originaux/Réponses', false)">
+			<h2 class="text-xl font-semibold mb-4">Originaux vs Réponses</h2>
+			<div class="relative h-full">
+				<canvas id="responseChart" class="pointer-events-none h-full w-full"></canvas>
+			</div>
+		</div>
+		<!-- Graphique 4 -->
+		<div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+			onclick="openModal('senders', 'Top expéditeurs', false)">
+			<h2 class="text-xl font-semibold mb-4">Activité par expéditeur</h2>
+			<div class="relative h-full">
+				<canvas id="senderChart" class="pointer-events-none h-full w-full"></canvas>
+			</div>
+		</div>
+		<!-- New chart for message and subject length analysis -->
+		<div class="chart-container bg-white p-6 rounded-lg shadow transform transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer overflow-hidden"
+			onclick="openModal('length', 'Analyse de la longueur des messages et des sujets', false)">
+			<h2 class="text-xl font-semibold mb-4">Longueur des messages et des sujets</h2>
+			<div class="relative h-full">
+				<canvas id="lengthChart" class="pointer-events-none h-full w-full"></canvas>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- MODAL -->
 <div id="modalContainer" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center hidden z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative">
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-red-700 text-2xl">&times;</button>
-      <h2 class="text-xl font-semibold mb-4 text-center" id="modalTitle"></h2>
-
-      <!-- Sélection de la granularité -->
-      <div id="modalGranularity" class="mb-4 hidden">
-        <div class="flex gap-4 items-center">
-          <div>
-            <label for="modalGranularitySelect" class="font-semibold">Granularité :</label>
-            <select id="modalGranularitySelect" onchange="toggleDateInputs()" class="bg-red-100 px-2 py-1 text-red-700 rounded">
-              <option value="hour">Heure</option>
-              <option value="day">Jour</option>
-              <option value="month">Mois</option>
-              <option value="year">Année</option>
-              <option value="range">Plage de dates</option>
-            </select>
-          </div>
-          <div id="modalDateInputs" class="hidden flex-grow gap-4">
-            <div class="flex-1">
-              <label for="modalStartDate" class="font-semibold">Début :</label>
-              <input type="date" id="modalStartDate" class="bg-red-100 px-2 py-1 text-red-700 rounded w-full"
-                     min="1980-01-01" max="2002-12-31">
-            </div>
-            <div class="flex-1">
-              <label for="modalEndDate" class="font-semibold">Fin :</label>
-              <input type="date" id="modalEndDate" class="bg-red-100 px-2 py-1 text-red-700 rounded w-full"
-                     min="1980-01-01" max="2002-12-31">
-            </div>
-          </div>
-          <button class="bg-red-500 text-white px-4 py-2 rounded h-fit" onclick="updateGranularity()">
-            Appliquer
-          </button>
-        </div>
-      </div>
-
-      <div class="w-full h-[70vh] flex justify-center items-center">
-        <canvas id="modalChart"></canvas>
-      </div>
-    </div>
+	<div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative">
+		<button onclick="closeModal()" class="absolute top-4 right-4 text-red-700 text-2xl">&times;</button>
+		<h2 class="text-xl font-semibold mb-4 text-center" id="modalTitle"></h2>
+		<!-- Sélection de la granularité -->
+		<div id="modalGranularity" class="mb-4 hidden">
+			<div class="flex gap-4 items-center">
+				<div>
+				<label for="modalGranularitySelect" class="font-semibold">Granularité :</label>
+				<select id="modalGranularitySelect" onchange="toggleDateInputs()" class="bg-red-100 px-2 py-1 text-red-700 rounded">
+					<option value="hour">Heure</option>
+					<option value="day">Jour</option>
+					<option value="month">Mois</option>
+					<option value="year">Année</option>
+					<option value="range">Plage de dates</option>
+				</select>
+				</div>
+				<div id="modalDateInputs" class="hidden flex-grow gap-4">
+				<div class="flex-1">
+					<label for="modalStartDate" class="font-semibold">Début :</label>
+					<input type="date" id="modalStartDate" class="bg-red-100 px-2 py-1 text-red-700 rounded w-full"
+						min="1980-01-01" max="2002-12-31">
+				</div>
+				<div class="flex-1">
+					<label for="modalEndDate" class="font-semibold">Fin :</label>
+					<input type="date" id="modalEndDate" class="bg-red-100 px-2 py-1 text-red-700 rounded w-full"
+						min="1980-01-01" max="2002-12-31">
+				</div>
+				</div>
+				<button class="bg-red-500 text-white px-4 py-2 rounded h-fit" onclick="updateGranularity()">
+				Appliquer
+				</button>
+			</div>
+		</div>
+		<div class="w-full h-[70vh] flex justify-center items-center">
+			<canvas id="modalChart"></canvas>
+		</div>
+	</div>
 </div>
+
+{% endif %}
 
 <!-- ===================================== -->
 <!-- Version Chart.js                     -->

@@ -11,6 +11,13 @@ from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
 
 def statistics(request):
+    if Mail.objects.count() == 0:
+        context = {
+            "error": True
+        }
+        return render(request, "statistics.html", context)
+
+
     # Répartition par dossier
     folders = Mail.objects.values_list('filepath', flat=True)
     folder_counts = {}
@@ -57,7 +64,7 @@ def statistics(request):
         ]
     }
 
-    return render(request, 'statistiques.html', {
+    return render(request, 'statistics.html', {
         "folder_data": json.dumps({
             "labels": list(folder_counts.keys()),
             "values": list(folder_counts.values())
