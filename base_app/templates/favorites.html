@@ -59,27 +59,31 @@
     // Filtrer les employés favoris
     const favoriteEmployees = employees.filter(emp => favorites.includes(emp.id));
 
-    // Ajouter chaque employé favori dans la table
-    favoriteEmployees.forEach(employee => {
-        const row = document.createElement('li');
-        row.className = "border-b border-gray-200 p-4 cursor-pointer transition-colors duration-200 hover:bg-gray-100 flex items-center";
-    
-        row.innerHTML = `
-            <span class="flex-1 text-gray-800">${employee.firstname}</span>
-            <span class="flex-1 text-gray-800">${employee.lastname}</span>
-            <span class="flex-1 text-gray-800">${employee.category}</span>
-            <span class="flex-1 text-center text-gray-800">
-                <i class="fa s fa-star"
-                   id="favorite-${employee.id}" 
-                   data-employee-id="${employee.id}"
-                   onclick="toggleFavorite(this)"
-                   style="color: #ffce33;"></i>
-            </span>
-        `;
-    
-        favoritesList.appendChild(row);
-    });
-  }
+    if (favoriteEmployees.length === 0) {
+      // Si aucun employé n'est favori, afficher le message
+      favoritesList.innerHTML = '<li class="text-gray-600 text-center py-4">Aucune personne ajoutée en favori</li>';
+    } else{
+            favoriteEmployees.forEach(employee => {
+            const row = document.createElement('li');
+            row.className = "border-b border-gray-200 p-4 cursor-pointer transition-colors duration-200 hover:bg-gray-100 flex items-center";
+        
+            row.innerHTML = `
+                <span class="flex-1 text-gray-800">${employee.firstname}</span>
+                <span class="flex-1 text-gray-800">${employee.lastname}</span>
+                <span class="flex-1 text-gray-800">${employee.category}</span>
+                <span class="flex-1 text-center text-gray-800">
+                    <i class="fa s fa-star"
+                    id="favorite-${employee.id}" 
+                    data-employee-id="${employee.id}"
+                    onclick="toggleFavorite(this)"
+                    style="color: #ffce33;"></i>
+                </span>
+            `;
+        
+            favoritesList.appendChild(row);
+        });
+        }
+    }
 
   // Fonction pour gérer le clic sur l'étoile (ajouter/retirer des favoris)
   function toggleFavorite(starElement) {
