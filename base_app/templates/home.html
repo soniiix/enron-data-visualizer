@@ -88,31 +88,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Troisième ligne (le plus d'échanges avec externes) -->
-            <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 lg:mb-3">
-                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Le plus d'échanges avec des externes</h3>
-                    <div class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-x-5 gap-y-1 text-xs text-center sm:text-sm lg:text-base">
-                        <span class="mb-1 text-neutral-500">Personne</span>
-                        <span class="mb-2 text-neutral-500">Pourcentage</span>
-                        <span class="mb-2 text-neutral-500"></span>
-                        
-                        {% for employee in employees_with_most_exchanges %}
-                            <!-- Affichage des informations pour chaque employé -->
-                            <span class="mb-1">{{ employee.firstname }} {{ employee.lastname }}</span>
-                            <span class="mb-2 text-red-700">({{ employee.percentage }}%) - {{ employee.interactions_count }}</span>
-                            <div class="mb-3">
-                                <a
-                                class="bg-red-100 cursor-pointer text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border" 
-                                data-category="{{ employee.category }}"
-                                data-email="{{ employee.email_address }}"
-                                data-firstname="{{ employee.firstname }}"
-                                data-lastname="{{ employee.lastname }}"
-                                onclick="showInfo(event)">Ouvrir</a>
-                            </div>
-                        {% endfor %}
-                        
-                    </div>
-                </div>
         </div>
 
         <!-- COLONNE DROITE -->
@@ -146,18 +121,29 @@
                         {% endfor %}
                     </div>
                 </div>
-                <!-- Troisième ligne (semaines avec le plus d'échanges) -->
-                <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 mb-3">
-                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Semaine avec le plus d'échanges</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-x-5 gap-y-1 text-xs text-center sm:text-sm lg:text-base">
-                        <span class="mb-1 text-neutral-500">Semaine</span>
-                        <span class="mb-2 text-neutral-500">Mails</span>
-                        <span class="mb-1">12/09/2010 - 19/09/2010</span>
-                        <span class="mb-2 text-red-700">756</span>
-                        <span class="mb-1">09/02/2013 - 16/02/2013</span>
-                        <span class="mb-2 text-red-700">602</span>
-                        <span class="mb-1">13/11/2015 - 20/11/2015</span>
-                        <span class="mb-2 text-red-700">601</span>
+                <!-- Troisième ligne (le plus d'échanges avec externes) -->
+                <div class="flex flex-col items-center bg-white p-2 sm:p-4 rounded-xl border-gray-200 border-2 lg:mb-3">
+                    <h3 class="mb-5 text-sm text-center sm:text-base lg:text-lg">Le plus d'échanges avec des externes</h3>
+                    <div class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-x-5 gap-y-1 text-xs text-center sm:text-sm lg:text-base">
+                        <span class="mb-1 text-neutral-500">Personne</span>
+                        <span class="mb-2 text-neutral-500">Pourcentage</span>
+                        <span class="mb-2 text-neutral-500"></span>
+                        
+                        {% for employee in employees_with_most_exchanges %}
+                            <!-- Affichage des informations pour chaque employé -->
+                            <span class="mb-1">{{ employee.firstname }} {{ employee.lastname }}</span>
+                            <span class="mb-2 text-red-700">({{ employee.percentage }}%) - {{ employee.interactions_count }}</span>
+                            <div class="mb-3">
+                                <a
+                                class="bg-red-100 cursor-pointer text-red-700 font-bold px-3 py-1.5 rounded-xl hover:border" 
+                                data-category="{{ employee.category }}"
+                                data-email="{{ employee.email_address }}"
+                                data-firstname="{{ employee.firstname }}"
+                                data-lastname="{{ employee.lastname }}"
+                                onclick="showInfo(event)">Ouvrir</a>
+                            </div>
+                        {% endfor %}
+                        
                     </div>
                 </div>
             </div>
