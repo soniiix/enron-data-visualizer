@@ -104,13 +104,16 @@ def home(request):
         employees_with_most_exchanges = []
         for interaction in employee_interactions:
             employee = Employee.objects.get(id=interaction['sender_email_id__employee_id'])
+
+            if employee.category == 'Externe':
+                continue
+
             interactions_count = interaction['interactions_count']
             
             # Calcul du pourcentage
-            if total_interactions > 0:
-                percentage = (interactions_count / total_interactions) * 100
-            else:
-                percentage = 0
+            
+            percentage = (interactions_count / total_interactions) * 100 if total_interactions > 0 else 0
+            
 
             employees_with_most_exchanges.append({
                 'firstname': employee.firstname,
@@ -119,6 +122,8 @@ def home(request):
                 'interactions_count': interaction['interactions_count'],
                 'percentage': round(percentage, 2)
             })
+
+            employees_with_most_exchanges.sort(key=lambda x: x['interactions_count'], reverse=True)
 
         context = {
             "error": False,
